@@ -1,16 +1,24 @@
 package com.example.myapplication.MainMenu;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ahmadrosid.svgloader.SvgLoader;
+import com.bumptech.glide.Glide;
 import com.example.myapplication.Constants;
 import com.example.myapplication.CourseInformation.CourseInfo;
 import com.example.myapplication.CourseInformation.CourseSection;
@@ -18,6 +26,11 @@ import com.example.myapplication.MoodleApi;
 import com.example.myapplication.R;
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import retrofit2.Call;
@@ -83,7 +96,7 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
 
                     @Override
                     public void onFailure(Call<List<CourseSection>> call, Throwable t) {
-                        Log.e(Constants.TAG,Constants.ON_FAILURE_COURSE_CONTENTS);
+                        Log.e(Constants.TAG, Constants.ON_FAILURE_COURSE_CONTENTS);
                     }
                 });
 
@@ -99,4 +112,31 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
 
 
 
+//    private class HttpImageRequestTask extends AsyncTask<Void, Void, Drawable> {
+//        @Override
+//        protected Drawable doInBackground(Void... params) {
+//            try {
+//
+//
+//                final URL url = new URL("http://upload.wikimedia.org/wikipedia/commons/e/e8/Svg_example3.svg");
+//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//                InputStream inputStream = urlConnection.getInputStream();
+//                SVG svg = SVGParser.getSVGFromInputStream(inputStream);
+//                Drawable drawable = svg.createPictureDrawable();
+//                return drawable;
+//            } catch (Exception e) {
+//                Log.e("MainActivity", e.getMessage(), e);
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Drawable drawable) {
+//            // Update the view
+//            updateImageView(drawable);
+//        }
+//    }
 }
+
+

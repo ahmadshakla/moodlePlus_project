@@ -40,7 +40,7 @@ public class CourseInfo extends AppCompatActivity {
         }
         fatherRecyclerView = findViewById(R.id.recycler_view_course_info);
         fatherLayoutManager = new LinearLayoutManager(this);
-        fatherAdapter = new CourseSectionViewAdapter(courseSections);
+        fatherAdapter = new CourseSectionViewAdapter(courseSections,this);
         fatherRecyclerView.setLayoutManager(fatherLayoutManager);
         fatherRecyclerView.setAdapter(fatherAdapter);
     }

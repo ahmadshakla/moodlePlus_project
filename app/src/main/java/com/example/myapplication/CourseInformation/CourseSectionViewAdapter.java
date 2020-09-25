@@ -1,5 +1,6 @@
 package com.example.myapplication.CourseInformation;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.List;
 public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSectionViewAdapter.CourseViewHolder> {
 
     private List<CourseSection> courseSectionList;
+    private Activity activity;
 
     public static class CourseViewHolder extends RecyclerView.ViewHolder {
         public TextView courseTextView;
@@ -27,8 +29,9 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
         }
     }
 
-    public CourseSectionViewAdapter(List<CourseSection> courseList) {
+    public CourseSectionViewAdapter(List<CourseSection> courseList, Activity activity) {
         this.courseSectionList = courseList;
+        this.activity = activity;
     }
 
     @NonNull
@@ -43,7 +46,7 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
         CourseSection current = courseSectionList.get(position);
         holder.courseTextView.setText(current.getName());
         List<CourseSection.CourseSubSection> subSections = current.getModules();
-        CourseSubSectionViewAdapter childAdapter = new CourseSubSectionViewAdapter(subSections);
+        CourseSubSectionViewAdapter childAdapter = new CourseSubSectionViewAdapter(subSections,activity);
         holder.childRecyclerView.setAdapter(childAdapter);
 
     }
