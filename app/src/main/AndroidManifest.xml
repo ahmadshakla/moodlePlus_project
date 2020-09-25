@@ -9,12 +9,12 @@
     <application
         tools:replace="android:label"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_icon1"
         android:label="Moodle+"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_icon1_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CourseInformation.CourseInfo"></activity>
+        <activity android:name=".CourseInformation.CourseInfo" />
         <activity android:name=".MainMenu.CoursesMenu" />
         <activity android:name=".MainActivity">
             <intent-filter tools:ignore="ExtraText">
