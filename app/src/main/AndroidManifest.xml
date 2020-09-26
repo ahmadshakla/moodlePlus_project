@@ -7,15 +7,20 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        tools:replace="android:label"
         android:allowBackup="true"
         android:icon="@mipmap/ic_icon1"
         android:label="Moodle+"
         android:roundIcon="@mipmap/ic_icon1_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".CourseInformation.CourseInfo" />
-        <activity android:name=".MainMenu.CoursesMenu" />
+        android:theme="@style/AppTheme"
+        tools:replace="android:label">
+        <activity android:name="com.example.myapplication.CalenderData.CalenderViewActivity"></activity>
+        <activity
+            android:name=".CourseInformation.CourseInfoActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".MainMenu.CoursesMenuActivity"
+            tools:ignore="InnerclassSeparator" />
         <activity android:name=".MainActivity">
             <intent-filter tools:ignore="ExtraText">
                 <action android:name="android.intent.action.MAIN" />

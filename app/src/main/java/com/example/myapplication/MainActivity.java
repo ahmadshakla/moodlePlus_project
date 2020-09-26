@@ -13,13 +13,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.myapplication.MainMenu.CoursesMenu;
+import com.example.myapplication.MainMenu.CoursesMenuActivity;
 import com.example.myapplication.MainMenu.UserCourses;
 import com.example.myapplication.UserInformation.LoginReturn;
 import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Date expire = new Date(Long.parseLong("1587589140") * 1000);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.login_button);
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<UserCourses>> call, Response<List<UserCourses>> response) {
                 progressBar.setVisibility(View.VISIBLE);
                 courses.addAll(response.body());
-                Intent intent = new Intent(MainActivity.this, CoursesMenu.class);
+                Intent intent = new Intent(MainActivity.this, CoursesMenuActivity.class);
                 intent.putExtra(Constants.COURSE_ARR, gson.toJson(courses));
                 intent.putExtra(Constants.TOKEN, token);
                 intent.putExtra(Constants.USER_INFO, gson.toJson(userInfo));

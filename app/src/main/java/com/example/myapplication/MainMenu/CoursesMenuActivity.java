@@ -4,46 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 
-import com.ahmadrosid.svgloader.SvgLoader;
-import com.bumptech.glide.Glide;
 import com.example.myapplication.Constants;
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.SettingsMenu.SettingsButtonHandler;
 import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pixplicity.sharp.Sharp;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import okhttp3.Cache;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import com.example.myapplication.CalenderData.CalenderViewActivity;
 
-public class CoursesMenu extends AppCompatActivity {
+public class CoursesMenuActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
     private Button settingsButton;
     private Button voiceCommandButton;
+    private Button calenderButton;
     UserInfo userInfo;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +39,11 @@ public class CoursesMenu extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         settingsButton = findViewById(R.id.menu_button);
         voiceCommandButton = findViewById(R.id.voice_command_button);
+        calenderButton = findViewById(R.id.calenderMainButton);
         Gson gson = new Gson();
         ArrayList<UserCourses> userCourses = new ArrayList<>();
         Intent intent = getIntent();
+        token = intent.getStringExtra(Constants.TOKEN);
         String jsoned = intent.getStringExtra(Constants.COURSE_ARR);
         userInfo = gson.fromJson(intent.getStringExtra(Constants.USER_INFO), UserInfo.class);
         if (("[]".equals(jsoned))) {
@@ -81,6 +69,15 @@ public class CoursesMenu extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 settingsButtonHandler.showPopup(view);
+            }
+        });
+
+        calenderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CoursesMenuActivity.this, CalenderViewActivity.class);
+                intent.putExtra(Constants.TOKEN,token);
+                startActivity(intent);
             }
         });
     }

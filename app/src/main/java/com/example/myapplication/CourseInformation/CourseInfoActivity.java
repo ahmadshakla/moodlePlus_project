@@ -18,7 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class CourseInfo extends AppCompatActivity {
+public class CourseInfoActivity extends AppCompatActivity {
     private RecyclerView fatherRecyclerView;
     private RecyclerView.LayoutManager fatherLayoutManager;
     private RecyclerView.Adapter fatherAdapter;
@@ -43,5 +43,10 @@ public class CourseInfo extends AppCompatActivity {
         fatherAdapter = new CourseSectionViewAdapter(courseSections,this);
         fatherRecyclerView.setLayoutManager(fatherLayoutManager);
         fatherRecyclerView.setAdapter(fatherAdapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
