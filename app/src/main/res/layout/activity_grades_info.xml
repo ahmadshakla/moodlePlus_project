@@ -10,8 +10,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_grade_sheet"
-        android:layout_width="413dp"
-        android:layout_height="614dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/grade_drawable"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,10 +22,14 @@
 
     <TextView
         android:id="@+id/grade_info_text_view"
-        android:layout_width="414dp"
-        android:layout_height="47dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:background="@drawable/round"
         android:gravity="center"
-        android:text="TextView"
+        android:padding="15dp"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

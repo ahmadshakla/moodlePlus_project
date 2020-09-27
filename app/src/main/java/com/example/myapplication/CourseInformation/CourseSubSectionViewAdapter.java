@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -54,25 +55,22 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubSectionViewAdapter.CourseSubSectionViewHolder> implements  ActivityCompat.OnRequestPermissionsResultCallback{
+public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubSectionViewAdapter.CourseSubSectionViewHolder> implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     private List<CourseSection.CourseSubSection> courseSubSectionList;
     private Activity activity;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
+        switch (requestCode) {
             case 321:
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                }
-                else {
-                    Toast.makeText(activity,"permission denied",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(activity, "permission denied", Toast.LENGTH_LONG).show();
                 }
         }
     }
-
-
 
 
     public CourseSubSectionViewAdapter(List<CourseSection.CourseSubSection> courseList, Activity activity) {
@@ -114,7 +112,7 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
             if (!current.modicon.contains("icon") || !"false".equals(current.noviewlink)) {
                 Glide.with(activity).load(current.modicon).into(holder.iconImage);
 
-                }
+            }
 //            else {
 //                    Utils.fetchSvg(activity,
 //                            current.modicon,
@@ -126,38 +124,44 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
         if (current.contents != null && !current.contents.isEmpty()) {
             final CourseSection.CourseSubSection.CourseSubSectionContents contents =
                     current.contents.get(0);
-            if ("file".equals(contents.type)) {
-                holder.courseTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+
+            holder.courseTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if ("file".equals(contents.type)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                     == PackageManager.PERMISSION_DENIED) {
                                 String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                                activity.requestPermissions(permissions,321);
-                            }
-                            else{
-                                startDownload(contents.fileurl+"&token" +
-                                        "=690cb20e0e50c5ffd76cd3ab4e8cd797",current.name,"pdf");
+                                activity.requestPermissions(permissions, 321);
+                            } else {
+                                startDownload(contents.fileurl + "&token" +
+                                        "=690cb20e0e50c5ffd76cd3ab4e8cd797", contents.filename);
                             }
                         }
                     }
-                });
-            }
+                    else if ("url".equals(contents.type)) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(contents.fileurl));
+                        activity.startActivity(browserIntent);
+                    }
+                }
+            });
+
+
         }
 
     }
 
-    private void startDownload(String url,String name,String type){
+    private void startDownload(String url, String name) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setTitle(name);
         request.setDescription("downloading file... ");
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                name + "." + type);
+                name);
         DownloadManager downloadManager =
-                (DownloadManager)activity.getSystemService(Context.DOWNLOAD_SERVICE);
+                (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
         downloadManager.enqueue(request);
     }
 
@@ -261,8 +265,6 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
 //
 //
 //    }
-
-
 
 
     public static class CourseSubSectionViewHolder extends RecyclerView.ViewHolder {
