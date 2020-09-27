@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSectionViewAdapter.CourseViewHolder> {
@@ -29,7 +30,7 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
         }
     }
 
-    public CourseSectionViewAdapter(List<CourseSection> courseList, Activity activity) {
+    public CourseSectionViewAdapter(ArrayList<CourseSection> courseList, Activity activity) {
         this.courseSectionList = courseList;
         this.activity = activity;
     }

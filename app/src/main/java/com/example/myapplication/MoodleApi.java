@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import com.example.myapplication.CalenderData.CoursesAssignmentsInfo;
+import com.example.myapplication.CourseInformation.CourseGrades.GradesTable;
 import com.example.myapplication.CourseInformation.CourseSection;
 import com.example.myapplication.MainMenu.UserCourses;
 import com.example.myapplication.UserInformation.LoginReturn;
@@ -40,6 +41,14 @@ public interface MoodleApi {
                                             @Query("wstoken") String wstoken,
                                             @Query("wsfunction") String wsfunction,
                                             @Query("courseid") String courseid);
+
+
+    @GET(REST_API_LINK)
+    Call<GradesTable> getGradesInfo(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                    @Query("wstoken") String wstoken,
+                                    @Query("wsfunction") String wsfunction,
+                                    @Query("courseid") String courseid,
+                                    @Query("userid") String userid);
 
     @GET(REST_API_LINK)
     Call<CoursesAssignmentsInfo> getAssignmentsForCourses(@Query("moodlewsrestformat") String moodlewsrestformat,

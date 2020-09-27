@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name="com.example.myapplication.CalenderData.CalenderViewActivity"></activity>
+        <activity android:name="com.example.myapplication.CalenderData.CalenderViewActivity" />
+        <activity android:name="com.example.myapplication.CourseInformation.CourseGrades.GradesInfoActivity" />
+
+
         <activity
             android:name=".CourseInformation.CourseInfoActivity"
             tools:ignore="InnerclassSeparator" />
