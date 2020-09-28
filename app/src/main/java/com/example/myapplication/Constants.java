@@ -1,7 +1,7 @@
 package com.example.myapplication;
 
 public class Constants {
-    public final static String SHARED_PREFERENCE = "shared preference";
+    public final static String SHARED_PREFERENCE = "sshared ppreference";
     public final static String COURSE_ARR = "course array";
     public final static String TOKEN = "token";
     public static final String MOODLE_BASE_URL = "https://moodle2.cs.huji.ac.il/";
