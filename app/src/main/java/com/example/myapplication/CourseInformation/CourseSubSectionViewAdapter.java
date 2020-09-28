@@ -46,7 +46,11 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import okhttp3.Cache;
 import okhttp3.Call;
@@ -59,6 +63,7 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
 
     private List<CourseSection.CourseSubSection> courseSubSectionList;
     private Activity activity;
+    private Map<String,Integer> iconNames;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -76,6 +81,9 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
     public CourseSubSectionViewAdapter(List<CourseSection.CourseSubSection> courseList, Activity activity) {
         this.courseSubSectionList = new ArrayList<>();
         this.activity = activity;
+
+        initHashMap();
+
         for (CourseSection.CourseSubSection courseSubSection : courseList) {
             if ("false".equals(courseSubSection.noviewlink)) {
                 this.courseSubSectionList.add(courseSubSection);
@@ -85,6 +93,32 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
                 }
             }
         }
+    }
+
+    private void initHashMap() {
+        iconNames = new HashMap<>();
+        iconNames.put("assign",R.drawable.assign);
+        iconNames.put("assignment",R.drawable.assignment);
+        iconNames.put("book",R.drawable.book);
+        iconNames.put("chat",R.drawable.chat);
+        iconNames.put("choice",R.drawable.choice);
+        iconNames.put("data",R.drawable.data);
+        iconNames.put("feedback",R.drawable.feedback);
+        iconNames.put("folder",R.drawable.folder);
+        iconNames.put("forum",R.drawable.forum);
+        iconNames.put("glossary",R.drawable.glossary);
+        iconNames.put("imscp",R.drawable.imscp);
+        iconNames.put("label",R.drawable.label);
+        iconNames.put("lesson",R.drawable.lesson);
+        iconNames.put("lti",R.drawable.lti);
+        iconNames.put("page",R.drawable.page);
+        iconNames.put("paypal",R.drawable.paypal);
+        iconNames.put("quiz",R.drawable.quiz);
+        iconNames.put("resource",R.drawable.resource);
+        iconNames.put("scorm",R.drawable.scorm);
+        iconNames.put("survey",R.drawable.survey);
+        iconNames.put("url",R.drawable.url);
+        iconNames.put("wiki",R.drawable.wiki);
     }
 
     @NonNull
@@ -107,18 +141,16 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
             }
         }
         holder.courseTextView.setText(current.name);
-        final boolean[] fail = {false};
         if (current.modicon != null) {
             if (!current.modicon.contains("icon") || !"false".equals(current.noviewlink)) {
                 Glide.with(activity).load(current.modicon).into(holder.iconImage);
-
+//                holder.iconImage.setScaleType(ImageView.ScaleType.);
             }
-//            else {
-//                    Utils.fetchSvg(activity,
-//                            current.modicon,
-//                            holder.iconImage);
-//
-//                }
+            else{
+                if (iconNames.containsKey(current.modname)) {
+                    holder.iconImage.setImageResource(iconNames.get(current.modname));
+                }
+            }
 
         }
         if (current.contents != null && !current.contents.isEmpty()) {
@@ -162,7 +194,9 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
                 name);
         DownloadManager downloadManager =
                 (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadManager.enqueue(request);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+        }
     }
 
 
@@ -170,101 +204,6 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
     public int getItemCount() {
         return courseSubSectionList.size();
     }
-
-    static class Utils {
-        private static OkHttpClient httpClient;
-
-        public static void fetchSvg(Context context, String url, final ImageView target) {
-            if (httpClient == null) {
-                // Use cache for performance and basic offline capability
-                httpClient = new OkHttpClient.Builder()
-                        .cache(new Cache(context.getCacheDir(), 5 * 1024 * 1024))
-                        .build();
-            }
-
-            Request request = new Request.Builder().url(url).build();
-            httpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-//                    target.setImageDrawable(R.drawable.);
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    InputStream stream = response.body().byteStream();
-                    Sharp.loadInputStream(stream).into(target);
-                    stream.close();
-                }
-            });
-        }
-    }
-
-//    /**
-//     * Background Async Task to download file
-//     */
-//    class DownloadFileFromURL extends AsyncTask<String, String, String> {
-//
-//        /**
-//         * Before starting background thread Show Progress Bar Dialog
-//         */
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        /**
-//         * Downloading file in background thread
-//         */
-//        @Override
-//        protected String doInBackground(String... f_url) {
-//            int count;
-//            try {
-//                URL url = new URL(f_url[0]);
-//                URLConnection connection = url.openConnection();
-//                connection.connect();
-//
-//                // this will be useful so that you can show a tipical 0-100%
-//                // progress bar
-//                int lenghtOfFile = connection.getContentLength();
-//
-//                // download the file
-//                InputStream input = new BufferedInputStream(url.openStream(),
-//                        8192);
-//
-//                // Output stream
-//                OutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory()
-//                        + "/2020.kml");
-//
-//                byte data[] = new byte[1024];
-//
-//                long total = 0;
-//
-//                while ((count = input.read(data)) != -1) {
-//                    total += count;
-//                    // publishing the progress....
-//                    // After this onProgressUpdate will be called
-//                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-//
-//                    // writing data to file
-//                    output.write(data, 0, count);
-//                }
-//
-//                // flushing output
-//                output.flush();
-//
-//                // closing streams
-//                output.close();
-//                input.close();
-//
-//            } catch (Exception e) {
-//                Log.e("Error: ", e.getMessage());
-//            }
-//
-//            return null;
-//        }
-//
-//
-//    }
 
 
     public static class CourseSubSectionViewHolder extends RecyclerView.ViewHolder {
