@@ -6,34 +6,41 @@
     android:layout_height="match_parent"
     tools:context=".MainMenu.CoursesMenuActivity">
 
+
     <Button
         android:id="@+id/menu_button"
-        android:layout_width="53dp"
-        android:layout_height="53dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/ic_more_vert_black_24dp"
         android:backgroundTint="#448AFF"
+        app:layout_constraintBottom_toTopOf="@+id/course_name_text_view"
+        app:layout_constraintEnd_toStartOf="@+id/year_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/voice_command_button"
-        android:layout_width="53dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="118dp"
-        android:background="@drawable/ic_mic"
-        android:backgroundTint="@color/colorPrimary"
-        android:foregroundGravity="center"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/microphone"
+        app:layout_constraintBottom_toTopOf="@+id/course_name_text_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/menu_button"
+        app:layout_constraintStart_toEndOf="@+id/year_text_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/year_text_view"
         android:layout_width="0dp"
         android:layout_height="53dp"
-        android:background="@drawable/white_with_border"
-        android:backgroundTint="#FFAB40"
+        android:background="#FFAB40"
         android:gravity="center"
         android:text="2020/21"
         android:textSize="18sp"
