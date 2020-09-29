@@ -37,6 +37,7 @@ public class CalenderViewActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private HashMap<String, ArrayList<String>> daysOfEvents;
+    private EventsManager eventsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class CalenderViewActivity extends AppCompatActivity {
         MoodleApi moodleApi = retrofit.create(MoodleApi.class);
         Intent intent = getIntent();
         String token = intent.getStringExtra(Constants.TOKEN);
+        eventsManager = new EventsManager(token);
         call = moodleApi.getAssignmentsForCourses(Constants.MOODLE_W_REST_FORMAT,
                 token,
                 "mod_assign_get_assignments");
@@ -64,6 +66,27 @@ public class CalenderViewActivity extends AppCompatActivity {
         call.enqueue(createCallBack());
     }
 
+    private void setEvents() {
+        Callback<CoursesAssignmentsInfo> callback = eventsManager.createCallBack();
+        call.enqueue(callback);
+        HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignments>> assignmentsByCourse =
+                eventsManager.getAssignmentsByCourse();
+        if (assignmentsByCourse.size() > 0) {
+            for (CoursesAssignmentsInfo.CoursesData course : assignmentsByCourse.keySet()){
+                for (CoursesAssignmentsInfo.CoursesData.Assignments assignment :
+                        Objects.requireNonNull(assignmentsByCourse.get(course))){
+                    Calendar calendar = Calendar.getInstance();
+                    if (assignment.duedate > 0) {
+                        addEventsToMap(calendar, assignment, course);
+                    }
+                }
+            }
+            CalendarView calendarView = findViewById(R.id.calendarView);
+            calendarView.setEvents(events);
+            calendarView.setOnDayClickListener(handleEventClick());
+        }
+    }
+
     private Callback<CoursesAssignmentsInfo> createCallBack() {
         return new Callback<CoursesAssignmentsInfo>() {
             @Override
@@ -73,7 +96,7 @@ public class CalenderViewActivity extends AppCompatActivity {
                     for (CoursesAssignmentsInfo.CoursesData.Assignments assignment : courseData.assignments) {
                         Calendar calendar = Calendar.getInstance();
                         if (assignment.duedate > 0) {
-                            addEventsToMap(calendar,assignment,courseData);
+                            addEventsToMap(calendar, assignment, courseData);
                         }
                     }
                 }
@@ -89,18 +112,18 @@ public class CalenderViewActivity extends AppCompatActivity {
         };
     }
 
-    private OnDayClickListener handleEventClick(){
+    private OnDayClickListener handleEventClick() {
         return eventDay -> {
             Calendar clickedDayCalendar = eventDay.getCalendar();
             SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
             String day = format1.format(clickedDayCalendar.getTime());
             if (daysOfEvents.containsKey(day)) {
-                adapter = new CalenderEventsAdapter(daysOfEvents.get(day));;
-            }
-            else{
+                adapter = new CalenderEventsAdapter(daysOfEvents.get(day));
+                ;
+            } else {
                 adapter = new CalenderEventsAdapter(null);
-                Toast.makeText(CalenderViewActivity.this,"You don't have any events " +
-                        "in " + day,Toast.LENGTH_LONG).show();
+                Toast.makeText(CalenderViewActivity.this, "You don't have any events " +
+                        "in " + day, Toast.LENGTH_LONG).show();
             }
             eventsInDay.setLayoutManager(layoutManager);
             eventsInDay.setAdapter(adapter);
@@ -109,7 +132,7 @@ public class CalenderViewActivity extends AppCompatActivity {
 
     private void addEventsToMap(Calendar calendar,
                                 CoursesAssignmentsInfo.CoursesData.Assignments assignment,
-                                CoursesAssignmentsInfo.CoursesData courseData){
+                                CoursesAssignmentsInfo.CoursesData courseData) {
         calendar.setTimeInMillis(assignment.duedate * 1000);
         SimpleDateFormat dayFormat = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");

@@ -54,5 +54,8 @@ dependencies {
     // calender
     implementation 'com.applandeo:material-calendar-view:1.7.0'
 
+    implementation 'org.sufficientlysecure:html-textview:3.2'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
 }

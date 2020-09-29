@@ -2,6 +2,8 @@ package com.example.myapplication.MainMenu;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Constants;
@@ -51,7 +55,11 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
     @NonNull
     @Override
     public CoursesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Drawable unwrappedDrawable = AppCompatResources.getDrawable(context, R.drawable.course_fill);
+        Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+        DrawableCompat.setTint(wrappedDrawable, Color.parseColor("#c5e2ea"));
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.menu_single_line_view, parent, false);
+
         return new CoursesViewHolder(v);
     }
 

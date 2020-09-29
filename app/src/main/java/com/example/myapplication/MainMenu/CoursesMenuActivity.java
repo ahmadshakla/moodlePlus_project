@@ -58,7 +58,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
         calenderButton = findViewById(R.id.calenderMainButton);
         voiceCommandButton = findViewById(R.id.voice_command_button);
         Gson gson = new Gson();
-      userCourses = new ArrayList<>();
+        userCourses = new ArrayList<>();
         Intent intent = getIntent();
         token = intent.getStringExtra(Constants.TOKEN);
         String jsoned = intent.getStringExtra(Constants.COURSE_ARR);
@@ -113,24 +113,22 @@ public class CoursesMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 1 && resultCode == RESULT_OK){
+        if (requestCode == 1 && resultCode == RESULT_OK) {
             if (data != null) {
                 ArrayList<String> match = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (match != null) {
                     String text = match.get(0);
-                    if (text.matches("[oO]pen course number \\d+")){
-                        String courseNum = text.substring(text.lastIndexOf(" ")+1);
-                        int index=  isCourseAvailable(courseNum,userCourses);
-                        if (index>-1){
-                            Toast.makeText(this,match.get(0),Toast.LENGTH_LONG).show();
-                            openCourseInfoActivity(courseNum,index);
-                        }
-                        else {
+                    if (text.matches("[oO]pen course number \\d+")) {
+                        String courseNum = text.substring(text.lastIndexOf(" ") + 1);
+                        int index = isCourseAvailable(courseNum, userCourses);
+                        if (index > -1) {
+                            Toast.makeText(this, match.get(0), Toast.LENGTH_LONG).show();
+                            openCourseInfoActivity(courseNum, index);
+                        } else {
                             Toast.makeText(this, "You are not taking course " + courseNum,
                                     Toast.LENGTH_LONG).show();
                         }
-                    }
-                    else {
+                    } else {
                         Toast.makeText(this,
                                 "You should say something like: \"open course number 67100\"",
                                 Toast.LENGTH_LONG).show();
@@ -142,7 +140,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void openCourseInfoActivity(String courseNum,int index){
+    private void openCourseInfoActivity(String courseNum, int index) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -171,7 +169,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
         });
     }
 
-    private int isCourseAvailable(String courseId, ArrayList<UserCourses> userCourses){
+    private int isCourseAvailable(String courseId, ArrayList<UserCourses> userCourses) {
         for (int i = 0; i < userCourses.size(); i++) {
             UserCourses userCourse = userCourses.get(i);
             if (userCourse.getId().equals(courseId)) {

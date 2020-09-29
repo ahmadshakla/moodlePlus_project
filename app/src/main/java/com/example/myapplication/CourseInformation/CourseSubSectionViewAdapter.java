@@ -37,6 +37,8 @@ import com.example.myapplication.R;
 import com.pixplicity.sharp.OnSvgElementListener;
 import com.pixplicity.sharp.Sharp;
 
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -134,13 +136,18 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
     public void onBindViewHolder(@NonNull CourseSubSectionViewHolder holder, int position) {
         final CourseSection.CourseSubSection current = courseSubSectionList.get(position);
         Log.i("HBD", current.name);
-        if (current.description != null) {
-            if (!current.description.contains("src") && "true".equals(current.noviewlink)) {
-                holder.courseTextView.setTextColor(Color.parseColor("#C80DE8"));
+        if ( "false".equals(current.noviewlink)) {
+            holder.courseTextView.setText(current.name);
 
-            }
         }
-        holder.courseTextView.setText(current.name);
+        else {
+            holder.courseTextView.setVisibility(View.GONE);
+            holder.iconImage.setVisibility(View.GONE);
+        }
+        if (current.description != null && current.description.length() >0){
+            holder.descriptionTextView.setVisibility(View.VISIBLE);
+            holder.descriptionTextView.setHtml(current.description);
+        }
         if (current.modicon != null) {
             if (!current.modicon.contains("icon") || !"false".equals(current.noviewlink)) {
                 Glide.with(activity).load(current.modicon).into(holder.iconImage);
@@ -208,11 +215,13 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
 
     public static class CourseSubSectionViewHolder extends RecyclerView.ViewHolder {
         public TextView courseTextView;
+        public HtmlTextView descriptionTextView;
         public ImageView iconImage;
 
         public CourseSubSectionViewHolder(@NonNull View itemView) {
             super(itemView);
             courseTextView = itemView.findViewById(R.id.sub_section_textView);
+            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             iconImage = itemView.findViewById(R.id.imageView);
         }
     }
