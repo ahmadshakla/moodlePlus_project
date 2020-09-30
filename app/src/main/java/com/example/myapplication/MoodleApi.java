@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
 import com.example.myapplication.CalenderData.CoursesAssignmentsInfo;
+import com.example.myapplication.CourseInformation.CourseForums.DiscussionInfo;
+import com.example.myapplication.CourseInformation.CourseForums.ForumInfo;
 import com.example.myapplication.CourseInformation.CourseGrades.GradesTable;
 import com.example.myapplication.CourseInformation.CourseSection;
-import com.example.myapplication.MainMenu.UserCourses;
+import com.example.myapplication.MainMenu.UserCourse;
 import com.example.myapplication.UserInformation.LoginReturn;
 import com.example.myapplication.UserInformation.UserInfo;
 
@@ -11,7 +13,6 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface MoodleApi {
@@ -31,10 +32,10 @@ public interface MoodleApi {
 
 
     @GET(REST_API_LINK)
-    Call<List<UserCourses>> getUserCourses(@Query("moodlewsrestformat") String moodlewsrestformat,
-                                           @Query("wstoken") String wstoken,
-                                           @Query("wsfunction") String wsfunction,
-                                           @Query("userid") String userid);
+    Call<List<UserCourse>> getUserCourses(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                          @Query("wstoken") String wstoken,
+                                          @Query("wsfunction") String wsfunction,
+                                          @Query("userid") String userid);
 
     @GET(REST_API_LINK)
     Call<List<CourseSection>> getCourseInfo(@Query("moodlewsrestformat") String moodlewsrestformat,
@@ -55,5 +56,15 @@ public interface MoodleApi {
                                                           @Query("wstoken") String wstoken,
                                                           @Query("wsfunction") String wsfunction);
 
+    @GET(REST_API_LINK)
+    Call<List<ForumInfo>> getForumsForCourses(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                              @Query("wstoken") String wstoken,
+                                              @Query("wsfunction") String wsfunction,
+                                              @Query("courseids[0]") String coursesid);
 
+    @GET(REST_API_LINK)
+    Call<DiscussionInfo> getDiscussionsOfForum(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                             @Query("wstoken") String wstoken,
+                                             @Query("wsfunction") String wsfunction,
+                                             @Query("forumid") String forumid);
 }

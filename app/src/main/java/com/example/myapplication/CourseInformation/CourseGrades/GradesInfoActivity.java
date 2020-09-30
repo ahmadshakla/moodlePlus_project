@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Constants;
-import com.example.myapplication.MainMenu.UserCourses;
+import com.example.myapplication.MainMenu.UserCourse;
 import com.example.myapplication.MoodleApi;
 import com.example.myapplication.R;
 import com.example.myapplication.UserInformation.UserInfo;
@@ -34,18 +34,18 @@ public class GradesInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final Gson gson = new Gson();
         final String token = intent.getStringExtra(Constants.TOKEN);
-        final UserCourses userCourses = gson.fromJson(intent.getStringExtra(Constants.COURSE_SECTION),
-                UserCourses.class);
+        final UserCourse userCourse = gson.fromJson(intent.getStringExtra(Constants.COURSE_SECTION),
+                UserCourse.class);
         final UserInfo userInfo = gson.fromJson(intent.getStringExtra(Constants.USER_INFO),
                 UserInfo.class);
         TextView titleTextView = findViewById(R.id.grade_info_text_view);
-        titleTextView.setText(userCourses.getDisplayname());
+        titleTextView.setText(userCourse.getDisplayname());
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         MoodleApi moodleApi = retrofit.create(MoodleApi.class);
         Call<GradesTable> call = moodleApi.getGradesInfo(Constants.MOODLE_W_REST_FORMAT, token,
-                "gradereport_user_get_grade_items", userCourses.getId(), "457957");
+                "gradereport_user_get_grade_items", userCourse.getId(), userInfo.getId());
         call.enqueue(new Callback<GradesTable>() {
             @Override
             public void onResponse(Call<GradesTable> call, Response<GradesTable> response) {

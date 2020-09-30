@@ -6,15 +6,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.MainMenu.CoursesViewAdapter;
-import com.example.myapplication.MainMenu.UserCourses;
 import com.example.myapplication.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class CalenderEventsAdapter extends RecyclerView.Adapter<CalenderEventsAdapter.CalenderEventsHolder> {
 

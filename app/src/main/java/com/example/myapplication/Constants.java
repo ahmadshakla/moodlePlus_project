@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class Constants {
     public final static String SHARED_PREFERENCE = "shaaared pppreference";
     public final static String COURSE_ARR = "course array";
@@ -17,6 +20,11 @@ public class Constants {
     public final static String COURSE_SECTION_ARR = "sectionArray";
     public final static String COURSE_SECTION = "course section";
     public final static String USER_INFO = "user information";
+    public final static String FORUM = "forum";
 
 
+    public static Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    public static MoodleApi moodleApi = retrofit.create(MoodleApi.class);
 }

@@ -20,6 +20,7 @@ import com.example.myapplication.CourseInformation.CourseInfoActivity;
 import com.example.myapplication.CourseInformation.CourseSection;
 import com.example.myapplication.MoodleApi;
 import com.example.myapplication.R;
+import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -32,11 +33,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.CoursesViewHolder> {
-    private List<UserCourses> courseList;
+    private List<UserCourse> courseList;
     private Context context;
     private String token;
+    private UserInfo userInfo;
     private Gson gson = new Gson();
-
+    private Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    private MoodleApi moodleApi = retrofit.create(MoodleApi.class);
     public static class CoursesViewHolder extends RecyclerView.ViewHolder {
         public TextView courseTextView;
 
@@ -46,10 +51,12 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
         }
     }
 
-    public CoursesViewAdapter(List<UserCourses> courseList, Context context, String token) {
+    public CoursesViewAdapter(List<UserCourse> courseList, Context context, String token,
+                              UserInfo userInfo) {
         this.courseList = courseList;
         this.context = context;
         this.token = token;
+        this.userInfo = userInfo;
     }
 
     @NonNull
@@ -65,15 +72,11 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull CoursesViewHolder holder, int position) {
-        final UserCourses current = courseList.get(position);
+        final UserCourse current = courseList.get(position);
         holder.courseTextView.setText(current.getDisplayname());
         holder.courseTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                MoodleApi moodleApi = retrofit.create(MoodleApi.class);
                 Call<List<CourseSection>> call = moodleApi.getCourseInfo(Constants.MOODLE_W_REST_FORMAT,
                         token,
                         "core_course_get_contents", current.getId());
@@ -86,6 +89,7 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
                         intent.putExtra(Constants.TOKEN, token);
                         intent.putExtra(Constants.COURSE_SECTION_ARR, gson.toJson(sections));
                         intent.putExtra(Constants.COURSE_SECTION, gson.toJson(current));
+                        intent.putExtra(Constants.USER_INFO,gson.toJson(userInfo));
                         context.startActivity(intent);
                     }
 

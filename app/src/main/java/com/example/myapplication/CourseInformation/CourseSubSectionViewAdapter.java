@@ -33,7 +33,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.myapplication.Constants;
+import com.example.myapplication.CourseInformation.CourseForums.ForumInfo;
+import com.example.myapplication.CourseInformation.CourseForums.ForumViewActivity;
 import com.example.myapplication.R;
+import com.google.gson.Gson;
 import com.pixplicity.sharp.OnSvgElementListener;
 import com.pixplicity.sharp.Sharp;
 
@@ -66,7 +70,9 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
     private List<CourseSection.CourseSubSection> courseSubSectionList;
     private Activity activity;
     private Map<String,Integer> iconNames;
-
+    private String token;
+    private HashMap<String, ForumInfo> forumInfoHashMap;
+    private Gson gson = new Gson();
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -80,10 +86,12 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
     }
 
 
-    public CourseSubSectionViewAdapter(List<CourseSection.CourseSubSection> courseList, Activity activity) {
+    public CourseSubSectionViewAdapter(List<CourseSection.CourseSubSection> courseList,
+                                       Activity activity,String token,HashMap<String, ForumInfo> forumInfoHashMap) {
         this.courseSubSectionList = new ArrayList<>();
         this.activity = activity;
-
+        this.token = token;
+        this.forumInfoHashMap = forumInfoHashMap;
         initHashMap();
 
         for (CourseSection.CourseSubSection courseSubSection : courseList) {
@@ -158,37 +166,53 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
                     holder.iconImage.setImageResource(iconNames.get(current.modname));
                 }
             }
+            if ("forum".equals(current.modname)){
+                //TODO
+                holder.courseTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (forumInfoHashMap.containsKey(current.id)){
+                            ForumInfo forum = forumInfoHashMap.get(current.id);
+                            Intent intent = new Intent(activity, ForumViewActivity.class);
+                            intent.putExtra(Constants.TOKEN,token);
+                            intent.putExtra(Constants.FORUM,gson.toJson(forum));
+                            activity.startActivity(intent);
+                        }
+                    }
+                });
+
+            }
 
         }
         if (current.contents != null && !current.contents.isEmpty()) {
             final CourseSection.CourseSubSection.CourseSubSectionContents contents =
                     current.contents.get(0);
-
-            holder.courseTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if ("file".equals(contents.type)) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                    == PackageManager.PERMISSION_DENIED) {
-                                String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                                activity.requestPermissions(permissions, 321);
-                            } else {
-                                startDownload(contents.fileurl + "&token" +
-                                        "=690cb20e0e50c5ffd76cd3ab4e8cd797", contents.filename);
-                            }
-                        }
-                    }
-                    else if ("url".equals(contents.type)) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(contents.fileurl));
-                        activity.startActivity(browserIntent);
-                    }
-                }
-            });
-
-
+            holder.courseTextView.setOnClickListener(handleUrlsAndFiles(contents));
         }
 
+    }
+    private View.OnClickListener handleUrlsAndFiles(CourseSection.CourseSubSection.CourseSubSectionContents contents){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ("file".equals(contents.type)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                == PackageManager.PERMISSION_DENIED) {
+                            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                            activity.requestPermissions(permissions, 321);
+                        } else {
+                            startDownload(contents.fileurl + "&token=" +
+                                    token, contents.filename);
+                        }
+                    }
+                }
+                else if ("url".equals(contents.type)) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(contents.fileurl));
+                    activity.startActivity(browserIntent);
+                }
+            }
+        };
     }
 
     private void startDownload(String url, String name) {

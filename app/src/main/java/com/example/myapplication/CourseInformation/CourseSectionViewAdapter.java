@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.CourseInformation.CourseForums.ForumInfo;
 import com.example.myapplication.R;
 
 import org.sufficientlysecure.htmltextview.HtmlAssetsImageGetter;
@@ -17,12 +18,15 @@ import org.sufficientlysecure.htmltextview.HtmlResImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSectionViewAdapter.CourseViewHolder> {
 
     private List<CourseSection> courseSectionList;
     private Activity activity;
+    private String token;
+    private HashMap<String, ForumInfo> forumInfoHashMap;
 
     public static class CourseViewHolder extends RecyclerView.ViewHolder {
         public TextView courseTextView;
@@ -37,9 +41,12 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
         }
     }
 
-    public CourseSectionViewAdapter(ArrayList<CourseSection> courseList, Activity activity) {
+    public CourseSectionViewAdapter(ArrayList<CourseSection> courseList, Activity activity,
+                                    String token,HashMap<String, ForumInfo> forumInfoHashMap) {
         this.courseSectionList = courseList;
         this.activity = activity;
+        this.token = token;
+        this.forumInfoHashMap = forumInfoHashMap;
     }
 
     @NonNull
@@ -61,7 +68,7 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
                 String first = summery.substring(0, start);
                 String img = summery.substring(start, end);
                 String last = summery.substring(end);
-                img += "?token=690cb20e0e50c5ffd76cd3ab4e8cd797";
+                img += ("?token="+token);
                 summery = first+img+last;
             }
             holder.summeryTextView.setVisibility(View.VISIBLE);
@@ -69,7 +76,8 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
                     new HtmlHttpImageGetter(holder.summeryTextView));
         }
         List<CourseSection.CourseSubSection> subSections = current.getModules();
-        CourseSubSectionViewAdapter childAdapter = new CourseSubSectionViewAdapter(subSections,activity);
+        CourseSubSectionViewAdapter childAdapter = new CourseSubSectionViewAdapter(subSections,
+                activity,token,forumInfoHashMap);
         holder.childRecyclerView.setAdapter(childAdapter);
 
     }

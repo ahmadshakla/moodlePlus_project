@@ -14,13 +14,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.myapplication.MainMenu.CoursesMenuActivity;
-import com.example.myapplication.MainMenu.UserCourses;
+import com.example.myapplication.MainMenu.UserCourse;
 import com.example.myapplication.UserInformation.LoginReturn;
 import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -135,14 +134,14 @@ public class MainActivity extends AppCompatActivity {
      * @param userInfo the information of the user
      * @return the list of all the user's courses
      */
-    private List<UserCourses> getUserCourses(final String token, final UserInfo userInfo) {
-        final ArrayList<UserCourses> courses = new ArrayList<>();
+    private List<UserCourse> getUserCourses(final String token, final UserInfo userInfo) {
+        final ArrayList<UserCourse> courses = new ArrayList<>();
         MoodleApi moodleApi = retrofit.create(MoodleApi.class);
-        Call<List<UserCourses>> call = moodleApi.getUserCourses(Constants.MOODLE_W_REST_FORMAT, token,
+        Call<List<UserCourse>> call = moodleApi.getUserCourses(Constants.MOODLE_W_REST_FORMAT, token,
                 "core_enrol_get_users_courses", userInfo.getId());
-        call.enqueue(new Callback<List<UserCourses>>() {
+        call.enqueue(new Callback<List<UserCourse>>() {
             @Override
-            public void onResponse(Call<List<UserCourses>> call, Response<List<UserCourses>> response) {
+            public void onResponse(Call<List<UserCourse>> call, Response<List<UserCourse>> response) {
                 progressBar.setVisibility(View.VISIBLE);
                 courses.addAll(response.body());
                 Intent intent = new Intent(MainActivity.this, CoursesMenuActivity.class);
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<UserCourses>> call, Throwable t) {
+            public void onFailure(Call<List<UserCourse>> call, Throwable t) {
                 textView.setText(Constants.WRONG_LOGIN);
             }
         });

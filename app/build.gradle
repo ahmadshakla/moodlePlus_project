@@ -54,8 +54,10 @@ dependencies {
     // calender
     implementation 'com.applandeo:material-calendar-view:1.7.0'
 
+    //html textView
     implementation 'org.sufficientlysecure:html-textview:3.2'
 
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    //expandable textView
+    implementation 'com.github.gifffert:ExpandableTextView:0.1.6'
 
 }

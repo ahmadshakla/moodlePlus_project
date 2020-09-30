@@ -44,7 +44,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
     private Button calenderButton;
     UserInfo userInfo;
     String token;
-    ArrayList<UserCourses> userCourses;
+    ArrayList<UserCourse> userCours;
     Gson gson = new Gson();
 
     @Override
@@ -58,23 +58,22 @@ public class CoursesMenuActivity extends AppCompatActivity {
         calenderButton = findViewById(R.id.calenderMainButton);
         voiceCommandButton = findViewById(R.id.voice_command_button);
         Gson gson = new Gson();
-        userCourses = new ArrayList<>();
+        userCours = new ArrayList<>();
         Intent intent = getIntent();
         token = intent.getStringExtra(Constants.TOKEN);
         String jsoned = intent.getStringExtra(Constants.COURSE_ARR);
         userInfo = gson.fromJson(intent.getStringExtra(Constants.USER_INFO), UserInfo.class);
         if (("[]".equals(jsoned))) {
-            userCourses = new ArrayList<>();
+            userCours = new ArrayList<>();
         } else {
-            Type type = new TypeToken<ArrayList<UserCourses>>() {
+            Type type = new TypeToken<ArrayList<UserCourse>>() {
             }.getType();
-            userCourses = gson.fromJson(jsoned, type);
+            userCours = gson.fromJson(jsoned, type);
         }
-        adapter = new CoursesViewAdapter(userCourses, this, intent.getStringExtra(Constants.TOKEN));
+        adapter = new CoursesViewAdapter(userCours, this,
+                intent.getStringExtra(Constants.TOKEN),userInfo);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-//        Glide.with(this).load("https://moodle2.cs.huji.ac.il/nu19/theme/image" +
-//                ".php/classic/core/1600652210/f/pdf-24").into(voiceCommandButton);
 
     }
 
@@ -120,7 +119,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
                     String text = match.get(0);
                     if (text.matches("[oO]pen course number \\d+")) {
                         String courseNum = text.substring(text.lastIndexOf(" ") + 1);
-                        int index = isCourseAvailable(courseNum, userCourses);
+                        int index = isCourseAvailable(courseNum, userCours);
                         if (index > -1) {
                             Toast.makeText(this, match.get(0), Toast.LENGTH_LONG).show();
                             openCourseInfoActivity(courseNum, index);
@@ -158,7 +157,8 @@ public class CoursesMenuActivity extends AppCompatActivity {
                 intent.putExtra(Constants.TOKEN, token);
                 intent.putExtra(Constants.COURSE_SECTION_ARR, gson.toJson(sections));
                 intent.putExtra(Constants.COURSE_SECTION,
-                        gson.toJson(userCourses.get(index)));
+                        gson.toJson(userCours.get(index)));
+                intent.putExtra(Constants.USER_INFO,gson.toJson(userInfo));
                 startActivity(intent);
             }
 
@@ -169,9 +169,9 @@ public class CoursesMenuActivity extends AppCompatActivity {
         });
     }
 
-    private int isCourseAvailable(String courseId, ArrayList<UserCourses> userCourses) {
-        for (int i = 0; i < userCourses.size(); i++) {
-            UserCourses userCourse = userCourses.get(i);
+    private int isCourseAvailable(String courseId, ArrayList<UserCourse> userCours) {
+        for (int i = 0; i < userCours.size(); i++) {
+            UserCourse userCourse = userCours.get(i);
             if (userCourse.getId().equals(courseId)) {
                 return i;
             }

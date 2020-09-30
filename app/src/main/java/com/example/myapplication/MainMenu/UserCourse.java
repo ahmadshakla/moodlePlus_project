@@ -3,7 +3,7 @@ package com.example.myapplication.MainMenu;
 /**
  * third level - get the list of courses using the unique id
  */
-public class UserCourses {
+public class UserCourse {
 
     private String id;
     private String shortname;

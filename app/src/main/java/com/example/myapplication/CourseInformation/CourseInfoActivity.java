@@ -6,12 +6,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.myapplication.Constants;
+import com.example.myapplication.CourseInformation.CourseForums.ForumInfo;
 import com.example.myapplication.CourseInformation.CourseGrades.GradesInfoActivity;
-import com.example.myapplication.MainMenu.UserCourses;
+import com.example.myapplication.MainMenu.UserCourse;
+import com.example.myapplication.MoodleApi;
 import com.example.myapplication.R;
 import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
@@ -19,25 +23,43 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CourseInfoActivity extends AppCompatActivity {
     private RecyclerView fatherRecyclerView;
     private RecyclerView.LayoutManager fatherLayoutManager;
     private RecyclerView.Adapter fatherAdapter;
     private TextView gradesText;
+    private String token;
+    private UserCourse userCourse;
+    private UserInfo userInfo;
+    private ProgressBar progressBar;
+
+    private Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    private MoodleApi moodleApi = retrofit.create(MoodleApi.class);
+    private Gson gson = new Gson();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_info);
-        final Gson gson = new Gson();
         ArrayList<CourseSection> courseSections = new ArrayList<>();
         Intent intent = getIntent();
         final TextView courseName = findViewById(R.id.course_name_text_view);
-        final String token = intent.getStringExtra(Constants.TOKEN);
-        final UserCourses userCourses = gson.fromJson(intent.getStringExtra(Constants.COURSE_SECTION),
-                UserCourses.class);
-        courseName.setText(userCourses.getDisplayname());
-        final UserInfo userInfo = gson.fromJson(intent.getStringExtra(Constants.USER_INFO),
+        token = intent.getStringExtra(Constants.TOKEN);
+        userCourse = gson.fromJson(intent.getStringExtra(Constants.COURSE_SECTION),
+                UserCourse.class);
+        courseName.setText(userCourse.getDisplayname());
+        userInfo = gson.fromJson(intent.getStringExtra(Constants.USER_INFO),
                 UserInfo.class);
         String jsoned = intent.getStringExtra(Constants.COURSE_SECTION_ARR);
         if ((!"[]".equals(jsoned))) {
@@ -45,23 +67,55 @@ public class CourseInfoActivity extends AppCompatActivity {
             }.getType();
             courseSections = gson.fromJson(jsoned, type);
         }
+        gradesText = findViewById(R.id.grades);
+        progressBar = findViewById(R.id.progressBar3);
+        progressBar.setVisibility(View.VISIBLE);
+        getForums(userCourse.getId(), courseSections);
         fatherRecyclerView = findViewById(R.id.recycler_view_course_info);
         fatherLayoutManager = new LinearLayoutManager(this);
-        fatherAdapter = new CourseSectionViewAdapter(courseSections,CourseInfoActivity.this);
-        fatherRecyclerView.setLayoutManager(fatherLayoutManager);
-        fatherRecyclerView.setAdapter(fatherAdapter);
-        gradesText = findViewById(R.id.grades);
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         gradesText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CourseInfoActivity.this, GradesInfoActivity.class);
-                intent.putExtra(Constants.COURSE_SECTION, gson.toJson(userCourses));
+                intent.putExtra(Constants.COURSE_SECTION, gson.toJson(userCourse));
                 intent.putExtra(Constants.TOKEN, token);
                 intent.putExtra(Constants.USER_INFO, gson.toJson(userInfo));
                 startActivity(intent);
             }
         });
+    }
 
+    private void getForums(String courseid, ArrayList<CourseSection> courseSections) {
+        HashMap<String, ForumInfo> forumInfoHashMap = new HashMap<>();
+        Call<List<ForumInfo>> call = moodleApi.getForumsForCourses(Constants.MOODLE_W_REST_FORMAT,
+                token,
+                "mod_forum_get_forums_by_courses", courseid);
+        call.enqueue(new Callback<List<ForumInfo>>() {
+            @Override
+            public void onResponse(Call<List<ForumInfo>> call, Response<List<ForumInfo>> response) {
+                for (ForumInfo forum : response.body()) {
+                    forumInfoHashMap.put(forum.getCmid(), forum);
+                }
+                fatherAdapter = new CourseSectionViewAdapter(courseSections, CourseInfoActivity.this,
+                        token, forumInfoHashMap);
+                progressBar.setVisibility(View.INVISIBLE);
+                fatherRecyclerView.setLayoutManager(fatherLayoutManager);
+                fatherRecyclerView.setAdapter(fatherAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<ForumInfo>> call, Throwable t) {
+                Log.e(CourseInfoActivity.class.getName(), "mod_forum_get_forums_by_courses failed");
+            }
+        });
     }
 
 }
