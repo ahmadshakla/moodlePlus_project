@@ -7,6 +7,7 @@ public class ForumInfo {
     private String name;
     private String intro;
     private String cmid;
+    private boolean cancreatediscussions;
 
 
     public String getId() {
@@ -31,5 +32,9 @@ public class ForumInfo {
 
     public String getCmid() {
         return cmid;
+    }
+
+    public boolean getCancreatediscussions() {
+        return cancreatediscussions;
     }
 }

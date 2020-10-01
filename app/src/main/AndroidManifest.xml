@@ -16,7 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".CourseInformation.CourseForums.ForumViewActivity"></activity>
+        <activity android:name=".CourseInformation.CourseForums.ReplyToPostActivity"></activity>
+        <activity android:name=".CourseInformation.CourseForums.AddDiscussionActivity" />
+        <activity android:name=".CourseInformation.CourseForums.DiscussionPostsActivity" />
+        <activity android:name=".CourseInformation.CourseForums.ForumViewActivity" />
         <activity android:name=".CalenderData.CalenderViewActivity" />
         <activity android:name=".CourseInformation.CourseGrades.GradesInfoActivity" />
         <activity

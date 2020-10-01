@@ -21,6 +21,9 @@ public class Constants {
     public final static String COURSE_SECTION = "course section";
     public final static String USER_INFO = "user information";
     public final static String FORUM = "forum";
+    public final static String DISCUSSION_ID = "discussion id";
+    public final static String DISCUSSION_INFO = "discussion info";
+    public final static int ADD_POST_REQUEST_CODE = 11;
 
 
     public static Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)

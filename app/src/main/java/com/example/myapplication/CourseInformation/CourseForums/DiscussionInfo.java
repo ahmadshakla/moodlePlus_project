@@ -9,7 +9,15 @@ public class DiscussionInfo {
         String name;
         String groupid;
         String parent;
+        String discussion;
         String userfullname;
         String message;
+        boolean canreply;
+
+        public Discussion(String name,String message, boolean canreply) {
+            this.name = name;
+            this.message = message;
+            this.canreply = canreply;
+        }
     }
 }
