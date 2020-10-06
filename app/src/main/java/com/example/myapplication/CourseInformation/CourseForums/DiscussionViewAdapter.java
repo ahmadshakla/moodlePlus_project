@@ -83,17 +83,23 @@ public class DiscussionViewAdapter extends RecyclerView.Adapter<DiscussionViewAd
         });
         if (current.canreply) {
 
-            holder.nameAndTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(activity,DiscussionPostsActivity.class);
-                    intent.putExtra(Constants.TOKEN,token);
-                    intent.putExtra(Constants.DISCUSSION_ID,current.discussion);
-                    activity.startActivity(intent);
-
-                }
-            });
+            holder.nameAndTitle.setOnClickListener(handleClick(current));
+            holder.reply.setOnClickListener(handleClick(current));
         }
+    }
+
+    private View.OnClickListener handleClick(DiscussionInfo.Discussion current){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity,DiscussionPostsActivity.class);
+                intent.putExtra(Constants.TOKEN,token);
+                intent.putExtra(Constants.DISCUSSION_ID,current.discussion);
+
+                activity.startActivity(intent);
+
+            }
+        };
     }
 
     @Override

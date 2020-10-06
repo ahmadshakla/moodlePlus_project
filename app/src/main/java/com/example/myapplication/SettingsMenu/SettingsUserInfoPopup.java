@@ -20,6 +20,7 @@ import com.example.myapplication.Constants;
 import com.example.myapplication.R;
 import com.example.myapplication.UserInformation.UserInfo;
 
+import java.util.Objects;
 import java.util.zip.Inflater;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -38,7 +39,7 @@ public class SettingsUserInfoPopup extends AppCompatDialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        LayoutInflater layoutInflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.settings_userinfo_popup_layout, null);
         TextView name =view.findViewById(R.id.userName_popup);
         TextView email =view.findViewById(R.id.email_popup);

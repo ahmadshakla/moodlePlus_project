@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.PopupMenu;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.work.PeriodicWorkRequest;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
@@ -18,10 +19,13 @@ public class SettingsButtonHandler  implements PopupMenu.OnMenuItemClickListener
     Context context;
     Activity activity;
     UserInfo userInfo;
-    public SettingsButtonHandler(Context context, Activity activity, UserInfo userInfo) {
+    PeriodicWorkRequest periodicWorkRequest;
+    public SettingsButtonHandler(Context context, Activity activity, UserInfo userInfo,
+                                 PeriodicWorkRequest periodicWorkRequest) {
         this.context = context;
         this.activity =activity;
         this.userInfo = userInfo;
+        this.periodicWorkRequest = periodicWorkRequest;
     }
 
     public void showPopup(View v){
@@ -43,6 +47,12 @@ public class SettingsButtonHandler  implements PopupMenu.OnMenuItemClickListener
             smsPopup.show(((FragmentActivity)activity).getSupportFragmentManager(), "example " +
                     "dialog");
 
+        }
+        else if (menuItem.getItemId() == R.id.notificationPopUp){
+            NotificationsPopup notificationsPopup = new NotificationsPopup(periodicWorkRequest,
+                    activity);
+            notificationsPopup.show(((FragmentActivity)activity).getSupportFragmentManager(),
+                    "example notification dialog");
         }
         return true;
 

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
@@ -69,11 +68,11 @@ public class CalenderViewActivity extends AppCompatActivity {
     private void setEvents() {
         Callback<CoursesAssignmentsInfo> callback = eventsManager.createCallBack();
         call.enqueue(callback);
-        HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignments>> assignmentsByCourse =
+        HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignment>> assignmentsByCourse =
                 eventsManager.getAssignmentsByCourse();
         if (assignmentsByCourse.size() > 0) {
             for (CoursesAssignmentsInfo.CoursesData course : assignmentsByCourse.keySet()){
-                for (CoursesAssignmentsInfo.CoursesData.Assignments assignment :
+                for (CoursesAssignmentsInfo.CoursesData.Assignment assignment :
                         Objects.requireNonNull(assignmentsByCourse.get(course))){
                     Calendar calendar = Calendar.getInstance();
                     if (assignment.duedate > 0) {
@@ -93,7 +92,7 @@ public class CalenderViewActivity extends AppCompatActivity {
             public void onResponse(Call<CoursesAssignmentsInfo> call, Response<CoursesAssignmentsInfo> response) {
                 final List<CoursesAssignmentsInfo.CoursesData> courses = response.body().courses;
                 for (CoursesAssignmentsInfo.CoursesData courseData : courses) {
-                    for (CoursesAssignmentsInfo.CoursesData.Assignments assignment : courseData.assignments) {
+                    for (CoursesAssignmentsInfo.CoursesData.Assignment assignment : courseData.assignments) {
                         Calendar calendar = Calendar.getInstance();
                         if (assignment.duedate > 0) {
                             addEventsToMap(calendar, assignment, courseData);
@@ -131,7 +130,7 @@ public class CalenderViewActivity extends AppCompatActivity {
     }
 
     private void addEventsToMap(Calendar calendar,
-                                CoursesAssignmentsInfo.CoursesData.Assignments assignment,
+                                CoursesAssignmentsInfo.CoursesData.Assignment assignment,
                                 CoursesAssignmentsInfo.CoursesData courseData) {
         calendar.setTimeInMillis(assignment.duedate * 1000);
         SimpleDateFormat dayFormat = new SimpleDateFormat("dd-MM-yyyy");

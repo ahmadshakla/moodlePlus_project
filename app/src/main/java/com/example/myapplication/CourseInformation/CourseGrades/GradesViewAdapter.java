@@ -16,9 +16,10 @@ import com.google.gson.Gson;
 public class GradesViewAdapter extends RecyclerView.Adapter<GradesViewAdapter.GradesViewHolder> {
     private GradesTable.UserGrades.GradesItem[] gradeSheet;
     private Gson gson;
+
     public static class GradesViewHolder extends RecyclerView.ViewHolder {
-            public TextView grade_item;
-            public TextView grade;
+        public TextView grade_item;
+        public TextView grade;
 
         public GradesViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -26,10 +27,10 @@ public class GradesViewAdapter extends RecyclerView.Adapter<GradesViewAdapter.Gr
             grade = itemView.findViewById(R.id.grade);
         }
     }
-    public GradesViewAdapter(GradesTable.UserGrades.GradesItem[] grades){
+
+    public GradesViewAdapter(GradesTable.UserGrades.GradesItem[] grades) {
         gradeSheet = grades;
     }
-
 
 
     @NonNull
@@ -44,10 +45,14 @@ public class GradesViewAdapter extends RecyclerView.Adapter<GradesViewAdapter.Gr
         final GradesTable.UserGrades.GradesItem grade = gradeSheet[position];
         holder.grade_item.setText(grade.getItemName());
         String text;
-        if (grade.getGrade().equals("-")){
+        if (grade.getGrade().equals("-")) {
             text = "-";
-        }else{
-            text = grade.getGrade() + "/" + grade.getMaxGrade();
+        } else {
+            if (grade.getMaxGrade().equals("null") || grade.getGrade().equals("Pass") || grade.getGrade().equals("Fail")) {
+                text = grade.getGrade();
+            } else {
+                text = grade.getGrade() + "/" + grade.getMaxGrade();
+            }
         }
         holder.grade.setText(text);
     }

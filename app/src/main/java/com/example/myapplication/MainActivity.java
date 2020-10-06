@@ -1,6 +1,10 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +24,9 @@ import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,31 +37,36 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private String token = "null";
+    private SharedPreferences sharedPreferences;
 
     private TextView textView;
     private EditText username;
     private EditText password;
     private Button loginButton;
-//    LoadingDialog loadingDialog = new LoadingDialog(this);
+    //    LoadingDialog loadingDialog = new LoadingDialog(this);
     private ProgressBar progressBar;
-    SharedPreferences sharedPreferences;
     Gson gson = new Gson();
     Retrofit retrofit;
+    PeriodicWorkRequest periodicWorkRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        Date expire = new Date(Long.parseLong("1587589140") * 1000);
+
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         loginButton = findViewById(R.id.login_button);
         textView = findViewById(R.id.incorrect);
         progressBar = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.INVISIBLE);
+        sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
+//        sharedPreferences.getBoolean("added work",false);
         retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
     }
 
     @Override
@@ -83,11 +94,29 @@ public class MainActivity extends AppCompatActivity {
      * gets the token when the user inserts his username and password
      */
     private void getToken(Call<LoginReturn> call) {
-       progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         call.enqueue(new Callback<LoginReturn>() {
             @Override
             public void onResponse(Call<LoginReturn> call, Response<LoginReturn> response) {
                 token = response.body().getToken();
+                sharedPreferences.edit().putString(Constants.TOKEN,token).apply();
+                //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                Data data = new Data.Builder()
+                        .build();
+                periodicWorkRequest = new PeriodicWorkRequest.Builder(SampleWorker.class,
+                       1,TimeUnit.DAYS)
+                        .setInitialDelay(3,TimeUnit.HOURS)
+                        .setInputData(data)
+                        .addTag("periodic")
+                        .build();
+//                if (sharedPreferences.getBoolean("added work",false)){
+//                    WorkManager.getInstance(MainActivity.this).enqueue(periodicWorkRequest);
+                    sharedPreferences.edit().putBoolean("added work",
+                            sharedPreferences.getBoolean("added work",false)).apply();
+//                }
+
+//        WorkManager.getInstance(MainActivity.this).cancelWorkById(periodicWorkRequest.getId());
+                //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 getInfo(textView, token);
                 return;
             }
@@ -114,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 if (response.body().size() != 0) {
+                    sharedPreferences.edit().putString(Constants.USER_INFO ,
+                            gson.toJson(response.body().get(0))).apply();
                     getUserCourses(token, response.body().get(0));
                 } else {
                     textView.setText(Constants.WRONG_LOGIN);
@@ -145,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 courses.addAll(response.body());
                 Intent intent = new Intent(MainActivity.this, CoursesMenuActivity.class);
+                intent.putExtra(Constants.WORK_MANAGER,gson.toJson(periodicWorkRequest));
                 intent.putExtra(Constants.COURSE_ARR, gson.toJson(courses));
                 intent.putExtra(Constants.TOKEN, token);
                 intent.putExtra(Constants.USER_INFO, gson.toJson(userInfo));

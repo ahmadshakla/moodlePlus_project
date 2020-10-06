@@ -13,7 +13,6 @@ public class PostsInfo {
         public boolean hasparent;
         public String parentid;
         public Author author;
-
         public static class Author {
             public String id;
             public String fullname;

@@ -12,8 +12,11 @@ public class Constants {
     public static final String WRONG_LOGIN = "wrong username or password";
     public static final String MOODLE_W_REST_FORMAT = "json";
     public static final String USERNAME = "ahmad.shakla";
+//    public static final String USERNAME = "mohammadja";
     public static final String PASSWORD = "0932ahs";
+//    public static final String PASSWORD = "0506540821";
     public static final String ID_NUMBER = "31529455";
+//    public static final String ID_NUMBER = "31473642";
     public static final String TAG = "moodlePlus";
     public static final String ON_FAILURE_COURSE_CONTENTS = "failed to get the content of the " +
             "course";
@@ -21,9 +24,15 @@ public class Constants {
     public final static String COURSE_SECTION = "course section";
     public final static String USER_INFO = "user information";
     public final static String FORUM = "forum";
+    public final static String CONTENTS_ARR = "contents array";
+    public final static String FOLDER_NAME = "folder name";
     public final static String DISCUSSION_ID = "discussion id";
     public final static String DISCUSSION_INFO = "discussion info";
-    public final static int ADD_POST_REQUEST_CODE = 11;
+    public final static String POST_INFO = "post information";
+    public final static String POST_INFO_ARR = "post information array";
+    public final static String WORK_MANAGER = "work manager";
+    public final static int ADD_DISCUSSION_REQUEST_CODE = 11;
+    public final static int ADD_POST_REQUEST_CODE = 22;
 
 
     public static Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)

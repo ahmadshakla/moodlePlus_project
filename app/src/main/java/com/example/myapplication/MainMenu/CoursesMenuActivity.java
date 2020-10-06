@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.PeriodicWorkRequest;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.example.myapplication.Constants;
 import com.example.myapplication.CourseInformation.CourseInfoActivity;
 import com.example.myapplication.CourseInformation.CourseSection;
+import com.example.myapplication.CourseInformation.FilesAndUrlsHandler;
 import com.example.myapplication.MoodleApi;
 import com.example.myapplication.R;
 import com.example.myapplication.SettingsMenu.SettingsButtonHandler;
@@ -46,6 +48,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
     String token;
     ArrayList<UserCourse> userCours;
     Gson gson = new Gson();
+    PeriodicWorkRequest periodicWorkRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,9 @@ public class CoursesMenuActivity extends AppCompatActivity {
         Gson gson = new Gson();
         userCours = new ArrayList<>();
         Intent intent = getIntent();
+        periodicWorkRequest = gson.fromJson(intent.getStringExtra(Constants.WORK_MANAGER),
+                PeriodicWorkRequest.class);
+
         token = intent.getStringExtra(Constants.TOKEN);
         String jsoned = intent.getStringExtra(Constants.COURSE_ARR);
         userInfo = gson.fromJson(intent.getStringExtra(Constants.USER_INFO), UserInfo.class);
@@ -71,7 +77,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
             userCours = gson.fromJson(jsoned, type);
         }
         adapter = new CoursesViewAdapter(userCours, this,
-                intent.getStringExtra(Constants.TOKEN),userInfo);
+                intent.getStringExtra(Constants.TOKEN), userInfo);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
@@ -80,7 +86,8 @@ public class CoursesMenuActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        final SettingsButtonHandler settingsButtonHandler = new SettingsButtonHandler(this, this, userInfo);
+        final SettingsButtonHandler settingsButtonHandler = new SettingsButtonHandler(this, this,
+                userInfo, periodicWorkRequest);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,10 +119,12 @@ public class CoursesMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         if (requestCode == 1 && resultCode == RESULT_OK) {
             if (data != null) {
                 ArrayList<String> match = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (match != null) {
+                    Toast.makeText(this, match.get(0), Toast.LENGTH_LONG).show();
                     String text = match.get(0);
                     if (text.matches("[oO]pen course number \\d+")) {
                         String courseNum = text.substring(text.lastIndexOf(" ") + 1);
@@ -127,9 +136,16 @@ public class CoursesMenuActivity extends AppCompatActivity {
                             Toast.makeText(this, "You are not taking course " + courseNum,
                                     Toast.LENGTH_LONG).show();
                         }
+                    } else if (text.matches("[dD]ownload .+ from course \\d+")) {
+                        String courseNum = text.substring(text.lastIndexOf(" ") + 1);
+                        String fileName = text.substring(text.indexOf(" ") + 1, text.indexOf(" from" +
+                                " " +
+                                "course"));
+                        downloadFileViaVoice(courseNum, 0, fileName);
                     } else {
                         Toast.makeText(this,
-                                "You should say something like: \"open course number 67100\"",
+                                "You should say something like: \"open course number 67100\" or" +
+                                        "\"download ex1 from course 67100\"",
                                 Toast.LENGTH_LONG).show();
                     }
 
@@ -137,6 +153,44 @@ public class CoursesMenuActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    private void downloadFileViaVoice(String courseNum, int index, String fileName) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.MOODLE_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        MoodleApi moodleApi = retrofit.create(MoodleApi.class);
+        Call<List<CourseSection>> call = moodleApi.getCourseInfo(Constants.MOODLE_W_REST_FORMAT,
+                token,
+                "core_course_get_contents", courseNum);
+        call.enqueue(new Callback<List<CourseSection>>() {
+            @Override
+            public void onResponse(Call<List<CourseSection>> call,
+                                   Response<List<CourseSection>> response) {
+                List<CourseSection> courseSections = response.body();
+                FilesAndUrlsHandler filesAndUrlsHandler =
+                        new FilesAndUrlsHandler(CoursesMenuActivity.this, token);
+                if (courseSections != null) {
+                    for (CourseSection section : courseSections) {
+                        for (CourseSection.CourseSubSection subSection : section.getModules()) {
+                            if (subSection.name.equalsIgnoreCase(fileName)) {
+                                if (subSection.contents != null && subSection.contents.size() == 1) {
+                                    CourseSection.CourseSubSection.CourseSubSectionContents content =
+                                            subSection.contents.get(0);
+                                    filesAndUrlsHandler.handleFilesAndUrls(content);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CourseSection>> call, Throwable t) {
+                Log.e(Constants.TAG, Constants.ON_FAILURE_COURSE_CONTENTS);
+            }
+        });
     }
 
     private void openCourseInfoActivity(String courseNum, int index) {
@@ -158,7 +212,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
                 intent.putExtra(Constants.COURSE_SECTION_ARR, gson.toJson(sections));
                 intent.putExtra(Constants.COURSE_SECTION,
                         gson.toJson(userCours.get(index)));
-                intent.putExtra(Constants.USER_INFO,gson.toJson(userInfo));
+                intent.putExtra(Constants.USER_INFO, gson.toJson(userInfo));
                 startActivity(intent);
             }
 

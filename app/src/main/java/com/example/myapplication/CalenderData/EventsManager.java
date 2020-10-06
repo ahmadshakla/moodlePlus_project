@@ -2,12 +2,9 @@ package com.example.myapplication.CalenderData;
 
 import android.util.Log;
 
-import com.applandeo.materialcalendarview.CalendarView;
 import com.example.myapplication.Constants;
 import com.example.myapplication.MoodleApi;
-import com.example.myapplication.R;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +18,7 @@ public class EventsManager {
     private Retrofit retrofit;
     private MoodleApi moodleApi;
     private String Token;
-    private HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignments>> assignmentsByCourse;
+    private HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignment>> assignmentsByCourse;
 
     public EventsManager(String token) {
         assignmentsByCourse = new HashMap<>();
@@ -33,8 +30,8 @@ public class EventsManager {
     }
 
 
-    public HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignments>> getAssignmentsByCourses(List<CoursesAssignmentsInfo.CoursesData> courses) {
-        HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignments>> assignmentsByCourse =
+    public HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignment>> getAssignmentsByCourses(List<CoursesAssignmentsInfo.CoursesData> courses) {
+        HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignment>> assignmentsByCourse =
                 new HashMap<>();
         for (CoursesAssignmentsInfo.CoursesData course : courses) {
             assignmentsByCourse.put(course, course.assignments);
@@ -59,7 +56,7 @@ public class EventsManager {
     }
 
 
-    public HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignments>> getAssignmentsByCourse() {
+    public HashMap<CoursesAssignmentsInfo.CoursesData, List<CoursesAssignmentsInfo.CoursesData.Assignment>> getAssignmentsByCourse() {
         return assignmentsByCourse;
     }
 }

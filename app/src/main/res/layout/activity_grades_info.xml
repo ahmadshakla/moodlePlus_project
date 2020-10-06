@@ -12,7 +12,7 @@
         android:id="@+id/recycler_view_grade_sheet"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/grade_drawable"
+        android:background="@drawable/course_fill"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

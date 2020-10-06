@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.myapplication.Constants;
+import com.example.myapplication.CourseInformation.CourseEvents.CourseEventsActivity;
 import com.example.myapplication.CourseInformation.CourseForums.ForumInfo;
 import com.example.myapplication.CourseInformation.CourseGrades.GradesInfoActivity;
 import com.example.myapplication.MainMenu.UserCourse;
@@ -37,6 +38,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager fatherLayoutManager;
     private RecyclerView.Adapter fatherAdapter;
     private TextView gradesText;
+    private TextView eventsText;
     private String token;
     private UserCourse userCourse;
     private UserInfo userInfo;
@@ -53,6 +55,7 @@ public class CourseInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_info);
         ArrayList<CourseSection> courseSections = new ArrayList<>();
+        eventsText = findViewById(R.id.events);
         Intent intent = getIntent();
         final TextView courseName = findViewById(R.id.course_name_text_view);
         token = intent.getStringExtra(Constants.TOKEN);
@@ -85,6 +88,16 @@ public class CourseInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CourseInfoActivity.this, GradesInfoActivity.class);
+                intent.putExtra(Constants.COURSE_SECTION, gson.toJson(userCourse));
+                intent.putExtra(Constants.TOKEN, token);
+                intent.putExtra(Constants.USER_INFO, gson.toJson(userInfo));
+                startActivity(intent);
+            }
+        });
+        eventsText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CourseInfoActivity.this, CourseEventsActivity.class);
                 intent.putExtra(Constants.COURSE_SECTION, gson.toJson(userCourse));
                 intent.putExtra(Constants.TOKEN, token);
                 intent.putExtra(Constants.USER_INFO, gson.toJson(userInfo));

@@ -3,16 +3,17 @@ package com.example.myapplication.CourseInformation.CourseForums;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.myapplication.Constants;
 import com.example.myapplication.R;
+import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,11 +22,17 @@ import retrofit2.Response;
 public class AddDiscussionActivity extends AppCompatActivity {
     EditText newSubject;
     EditText newMessage;
+    SharedPreferences sharedPreferences;
+    UserInfo userInfo;
+    Gson gson;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_discussion);
-        Gson gson = new Gson();
+        gson = new Gson();
+        sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE,MODE_PRIVATE);
+        UserInfo userInfo = gson.fromJson(sharedPreferences.getString(Constants.USER_INFO,""),
+                UserInfo.class);
         Intent intent1 = getIntent();
         newSubject = findViewById(R.id.addDiscussionTopic);
         newMessage = findViewById(R.id.addDiscussionMessage);
@@ -56,10 +63,16 @@ public class AddDiscussionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String topic = newSubject.getText().toString();
                 String message = newMessage.getText().toString();
+                if (topic.length() == 0 || message.length() == 0){
+                    Toast.makeText(AddDiscussionActivity.this,"You should enter a topic and a " +
+                                    "message!",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
                 //TODO fix the name
                 DiscussionInfo.Discussion disc = new DiscussionInfo.Discussion(topic, message, true);
                 Call<PostDiscussionReturnInfo> call =
-                        Constants.moodleApi.getReturnResOfNewPost(disc
+                        Constants.moodleApi.getReturnResOfNewDiscussion(disc
                                 ,Constants.MOODLE_W_REST_FORMAT,
                                 finalToken,
                         "mod_forum_add_discussion", forum.getId(),
@@ -70,6 +83,7 @@ public class AddDiscussionActivity extends AppCompatActivity {
                     public void onResponse(Call<PostDiscussionReturnInfo> call,
                                            Response<PostDiscussionReturnInfo> response) {
                         disc.discussion = response.body().discussionid;
+                        disc.userfullname = userInfo.getFullname();
                         discussionInfo.discussions.add(0,disc);
                         intent.putExtra(Constants.DISCUSSION_INFO, gson.toJson(discussionInfo));
                         setResult(RESULT_OK,intent);

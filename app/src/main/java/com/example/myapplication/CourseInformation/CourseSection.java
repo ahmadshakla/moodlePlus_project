@@ -49,40 +49,40 @@ public class CourseSection {
         return visible;
     }
 
-    static class CourseSubSection{
-            String id;
-            String url;
-            String name;
-            String instance;
-            String description;
-            String visible;
-            String uservisible;
-            String visibleoncoursepage;
-            String modicon;
-            String modname;
-            String modplural;
-            String indent;
-            String onclick;
-            String afterlink;
-            String customdata;
-            String noviewlink;
-            String completion;
-            List<CourseSubSectionContents> contents;
+    public static class CourseSubSection{
+            public String id;
+            public String url;
+            public String name;
+            public String instance;
+            public String description;
+            public String visible;
+            public String uservisible;
+            public String visibleoncoursepage;
+            public String modicon;
+            public String modname;
+            public String modplural;
+            public String indent;
+            public String onclick;
+            public String afterlink;
+            public String customdata;
+            public String noviewlink;
+            public String completion;
+            public List<CourseSubSectionContents> contents;
 
-            static class CourseSubSectionContents{
-                String type;
-                String filename;
-                String filepath;
-                String filesize;
-                String fileurl;
-                String timecreated;
-                String timemodified;
-                String sortorder;
-                String mimetype;
-                String isexternalfile;
-                String userid;
-                String author;
-                String license;
+            public static class CourseSubSectionContents{
+               public String type;
+               public String filename;
+               public String filepath;
+               public String filesize;
+               public String fileurl;
+               public String timecreated;
+               public String timemodified;
+               public String sortorder;
+               public String mimetype;
+               public String isexternalfile;
+               public String userid;
+               public String author;
+               public String license;
             }
     }
 

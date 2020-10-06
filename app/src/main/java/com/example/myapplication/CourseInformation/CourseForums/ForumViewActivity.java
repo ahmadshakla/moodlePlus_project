@@ -13,23 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.myapplication.Constants;
-import com.example.myapplication.MainMenu.UserCourse;
 import com.example.myapplication.R;
-import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.example.myapplication.Constants.moodleApi;
 
 public class ForumViewActivity extends AppCompatActivity {
     private TextView forumTitle;
@@ -65,7 +56,7 @@ public class ForumViewActivity extends AppCompatActivity {
         }
         token = intent.getStringExtra(Constants.TOKEN);
         forumTitle.setText(forum.getName());
-        if (forum.getIntro() == null || forum.getIntro().length() > 0) {
+        if (forum.getIntro() == null || forum.getIntro().length() == 0) {
             forumDescription.setVisibility(View.GONE);
         }
         forumDescription.setHtml(forum.getIntro());
@@ -78,7 +69,7 @@ public class ForumViewActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.ADD_POST_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == Constants.ADD_DISCUSSION_REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 forum = gson.fromJson(data.getStringExtra(Constants.FORUM),
                         ForumInfo.class);
@@ -114,7 +105,7 @@ public class ForumViewActivity extends AppCompatActivity {
                         intent1.putExtra(Constants.FORUM, gson.toJson(forum));
                         intent1.putExtra(Constants.TOKEN, gson.toJson(token));
                         intent1.putExtra(Constants.DISCUSSION_INFO, gson.toJson(response.body()));
-                        startActivityForResult(intent1, Constants.ADD_POST_REQUEST_CODE);
+                        startActivityForResult(intent1, Constants.ADD_DISCUSSION_REQUEST_CODE);
 
                     }
                 });

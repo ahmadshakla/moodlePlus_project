@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import com.example.myapplication.CalenderData.CoursesAssignmentsInfo;
+import com.example.myapplication.CourseInformation.CourseForums.AddPostReturnInfo;
+import com.example.myapplication.CourseInformation.CourseForums.DeletePostReturnInfo;
 import com.example.myapplication.CourseInformation.CourseForums.DiscussionInfo;
 import com.example.myapplication.CourseInformation.CourseForums.ForumInfo;
 import com.example.myapplication.CourseInformation.CourseForums.PostDiscussionReturnInfo;
@@ -61,6 +63,12 @@ public interface MoodleApi {
                                                           @Query("wsfunction") String wsfunction);
 
     @GET(REST_API_LINK)
+    Call<CoursesAssignmentsInfo> getAssignmentsForOneCourse(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                                          @Query("wstoken") String wstoken,
+                                                          @Query("wsfunction") String wsfunction,
+                                                            @Query("courseids[0]") String courseid );
+
+    @GET(REST_API_LINK)
     Call<List<ForumInfo>> getForumsForCourses(@Query("moodlewsrestformat") String moodlewsrestformat,
                                               @Query("wstoken") String wstoken,
                                               @Query("wsfunction") String wsfunction,
@@ -79,12 +87,26 @@ public interface MoodleApi {
                                          @Query("discussionid") String discussionid);
 
     @POST(REST_API_LINK)
-    Call<PostDiscussionReturnInfo> getReturnResOfNewPost(@Body DiscussionInfo.Discussion discussion,
-                                                          @Query("moodlewsrestformat") String moodlewsrestformat,
-                                                          @Query("wstoken") String wstoken,
-                                                          @Query("wsfunction") String wsfunction,
-                                                          @Query("forumid") String forumid,
-                                                          @Query("subject") String subject,
-                                                          @Query("message") String message);
+    Call<PostDiscussionReturnInfo> getReturnResOfNewDiscussion(@Body DiscussionInfo.Discussion discussion,
+                                                               @Query("moodlewsrestformat") String moodlewsrestformat,
+                                                               @Query("wstoken") String wstoken,
+                                                               @Query("wsfunction") String wsfunction,
+                                                               @Query("forumid") String forumid,
+                                                               @Query("subject") String subject,
+                                                               @Query("message") String message);
+
+    @POST(REST_API_LINK)
+    Call<AddPostReturnInfo> getReturnResOfNewPost(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                                  @Query("wstoken") String wstoken,
+                                                  @Query("wsfunction") String wsfunction,
+                                                  @Query("postid") String postid,
+                                                  @Query("subject") String subject,
+                                                  @Query("message") String message);
+
+    @POST(REST_API_LINK)
+    Call<DeletePostReturnInfo> getReturnResOfDeletePost(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                                        @Query("wstoken") String wstoken,
+                                                        @Query("wsfunction") String wsfunction,
+                                                        @Query("postid") String postid);
 
 }

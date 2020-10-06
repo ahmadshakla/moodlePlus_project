@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Constants;
@@ -22,6 +24,8 @@ import com.example.myapplication.MoodleApi;
 import com.example.myapplication.R;
 import com.example.myapplication.UserInformation.UserInfo;
 import com.google.gson.Gson;
+
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.List;
 
@@ -42,6 +46,7 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     private MoodleApi moodleApi = retrofit.create(MoodleApi.class);
+    // ----------------------------- holder class -----------------------------
     public static class CoursesViewHolder extends RecyclerView.ViewHolder {
         public TextView courseTextView;
 
@@ -50,6 +55,7 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
             courseTextView = itemView.findViewById(R.id.course_in_view);
         }
     }
+    //---------------------------------------------------------------------------
 
     public CoursesViewAdapter(List<UserCourse> courseList, Context context, String token,
                               UserInfo userInfo) {
@@ -73,7 +79,8 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull CoursesViewHolder holder, int position) {
         final UserCourse current = courseList.get(position);
-        holder.courseTextView.setText(current.getDisplayname());
+        holder.courseTextView.setText(Html.fromHtml(Html.fromHtml(current.getDisplayname(),
+                HtmlCompat.FROM_HTML_MODE_LEGACY).toString(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         holder.courseTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
