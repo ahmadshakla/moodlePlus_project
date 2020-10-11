@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class CalenderEventsAdapter extends RecyclerView.Adapter<CalenderEventsAdapter.CalenderEventsHolder> {
 
-    ArrayList<String> events;
+    private ArrayList<String> events;
     public CalenderEventsAdapter(ArrayList<String> events){
         this.events = events;
     }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.Constants;
+import com.example.myapplication.CourseInformation.AssignmentSubmissions.AssignmentStatusActivity;
 import com.example.myapplication.CourseInformation.CourseForums.ForumInfo;
 import com.example.myapplication.CourseInformation.CourseForums.ForumViewActivity;
 import com.example.myapplication.R;
@@ -38,6 +38,7 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
     private String token;
     private HashMap<String, ForumInfo> forumInfoHashMap;
     private Gson gson = new Gson();
+    private String courseid;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -53,11 +54,13 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
 
 
     public CourseSubSectionViewAdapter(List<CourseSection.CourseSubSection> courseList,
-                                       Activity activity, String token, HashMap<String, ForumInfo> forumInfoHashMap) {
+                                       Activity activity, String token, HashMap<String,
+            ForumInfo> forumInfoHashMap, String courseid) {
         this.courseSubSectionList = new ArrayList<>();
         this.activity = activity;
         this.token = token;
         this.forumInfoHashMap = forumInfoHashMap;
+        this.courseid = courseid;
         initHashMap();
 
         for (CourseSection.CourseSubSection courseSubSection : courseList) {
@@ -109,7 +112,6 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
     @Override
     public void onBindViewHolder(@NonNull CourseSubSectionViewHolder holder, int position) {
         final CourseSection.CourseSubSection current = courseSubSectionList.get(position);
-        Log.i("HBD", current.name);
         if ("false".equals(current.noviewlink)) {
             holder.courseTextView.setText(current.name);
 
@@ -122,63 +124,79 @@ public class CourseSubSectionViewAdapter extends RecyclerView.Adapter<CourseSubS
             holder.descriptionTextView.setHtml(current.description);
         }
         if (current.modicon != null) {
-            if (!current.modicon.contains("icon") || !"false".equals(current.noviewlink)) {
-                Glide.with(activity).load(current.modicon).into(holder.iconImage);
-//                holder.iconImage.setScaleType(ImageView.ScaleType.);
-            } else {
-                if (iconNames.containsKey(current.modname)) {
-                    holder.iconImage.setImageResource(iconNames.get(current.modname));
-                }
-            }
-            if ("forum".equals(current.modname)) {
-                //TODO
-                holder.courseTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (forumInfoHashMap.containsKey(current.id)) {
-                            ForumInfo forum = forumInfoHashMap.get(current.id);
-                            Intent intent = new Intent(activity, ForumViewActivity.class);
-                            intent.putExtra(Constants.TOKEN, token);
-                            intent.putExtra(Constants.FORUM, gson.toJson(forum));
-                            activity.startActivity(intent);
-                        }
-                    }
-                });
-
-            } else if ("folder".equals(current.modname)) {
-                holder.courseTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(activity, CourseFolderViewActivity.class);
-                        intent.putExtra(Constants.TOKEN, token);
-                        intent.putExtra(Constants.CONTENTS_ARR, gson.toJson(current.contents));
-                        intent.putExtra(Constants.FOLDER_NAME,current.name);
-                        activity.startActivity(intent);
-                    }
-                });
-            }
-            else if ("lti".equals(current.modname) || "quiz".equals(current.modname)){
-                holder.courseTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(current.url));
-                        activity.startActivity(browserIntent);
-                    }
-                });
-            }
-
-
+            handleSubSection(holder, current);
         }
         if (current.contents != null && !current.contents.isEmpty()) {
             if (current.contents.size() == 1) {
                 final CourseSection.CourseSubSection.CourseSubSectionContents contents =
                         current.contents.get(0);
-                FilesAndUrlsHandler filesAndUrlsHandler = new FilesAndUrlsHandler(activity,token);
+                FilesAndUrlsHandler filesAndUrlsHandler = new FilesAndUrlsHandler(activity, token);
                 holder.courseTextView.setOnClickListener(filesAndUrlsHandler.handleUrlsAndFilesClick(contents));
 
             }
         }
 
+    }
+
+    private void handleSubSection(@NonNull CourseSubSectionViewHolder holder,
+                                  CourseSection.CourseSubSection current) {
+        if (!current.modicon.contains("icon") || !"false".equals(current.noviewlink)) {
+            Glide.with(activity).load(current.modicon).into(holder.iconImage);
+        } else {
+            if (iconNames.containsKey(current.modname)) {
+                holder.iconImage.setImageResource(iconNames.get(current.modname));
+            }
+        }
+        if ("forum".equals(current.modname)) {
+            //TODO
+            holder.courseTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (forumInfoHashMap.containsKey(current.id)) {
+                        ForumInfo forum = forumInfoHashMap.get(current.id);
+                        Intent intent = new Intent(activity, ForumViewActivity.class);
+                        intent.putExtra(Constants.TOKEN, token);
+                        intent.putExtra(Constants.FORUM, gson.toJson(forum));
+                        activity.startActivity(intent);
+                    }
+                }
+            });
+
+        } else if ("folder".equals(current.modname)) {
+            holder.courseTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(activity, CourseFolderViewActivity.class);
+                    intent.putExtra(Constants.TOKEN, token);
+                    intent.putExtra(Constants.CONTENTS_ARR, gson.toJson(current.contents));
+                    intent.putExtra(Constants.FOLDER_NAME, current.name);
+                    activity.startActivity(intent);
+                }
+            });
+        } else if ("lti".equals(current.modname) || "quiz".equals(current.modname)) {
+            holder.courseTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(current.url));
+                    activity.startActivity(browserIntent);
+                }
+            });
+        } else if ("assign".equals(current.modname)) {
+            //TODO
+            holder.courseTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(activity, AssignmentStatusActivity.class);
+                    intent.putExtra(Constants.SUB_SECTION_DATA, gson.toJson(current));
+                    intent.putExtra(Constants.COURSE_ID,courseid);
+                    intent.putExtra(Constants.TOKEN, token);
+                    activity.startActivity(intent);
+                }
+
+
+            });
+
+        }
     }
 
     @Override

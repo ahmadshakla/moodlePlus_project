@@ -27,7 +27,7 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
     private Activity activity;
     private String token;
     private HashMap<String, ForumInfo> forumInfoHashMap;
-
+    private String courseid;
     public static class CourseViewHolder extends RecyclerView.ViewHolder {
         public TextView courseTextView;
         public HtmlTextView summeryTextView;
@@ -42,11 +42,13 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
     }
 
     public CourseSectionViewAdapter(ArrayList<CourseSection> courseList, Activity activity,
-                                    String token,HashMap<String, ForumInfo> forumInfoHashMap) {
+                                    String token,HashMap<String, ForumInfo> forumInfoHashMap,
+                                    String courseid) {
         this.courseSectionList = courseList;
         this.activity = activity;
         this.token = token;
         this.forumInfoHashMap = forumInfoHashMap;
+        this.courseid = courseid;
     }
 
     @NonNull
@@ -77,7 +79,7 @@ public class CourseSectionViewAdapter extends RecyclerView.Adapter<CourseSection
         }
         List<CourseSection.CourseSubSection> subSections = current.getModules();
         CourseSubSectionViewAdapter childAdapter = new CourseSubSectionViewAdapter(subSections,
-                activity,token,forumInfoHashMap);
+                activity,token,forumInfoHashMap,courseid);
         holder.childRecyclerView.setAdapter(childAdapter);
 
     }

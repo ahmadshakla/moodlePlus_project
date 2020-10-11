@@ -15,7 +15,10 @@ public class CoursesAssignmentsInfo {
                 public String id ;
                 public String name ;
                 public String course;
+                public String cmid;
+                public String intro;
                 public long duedate;
+
 
             }
     }

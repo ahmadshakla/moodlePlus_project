@@ -31,6 +31,10 @@ public class Constants {
     public final static String POST_INFO = "post information";
     public final static String POST_INFO_ARR = "post information array";
     public final static String WORK_MANAGER = "work manager";
+    public final static String SUB_SECTION_DATA = "sub section info";
+    public final static String COURSE_ID = "course id";
+    public static final int VOICE_COMMAND_REQUEST_CODE = 1;
+    public static final int CAMERA_COMMAND_REQUEST_CODE = 3;
     public final static int ADD_DISCUSSION_REQUEST_CODE = 11;
     public final static int ADD_POST_REQUEST_CODE = 22;
 

@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import com.example.myapplication.CalenderData.CoursesAssignmentsInfo;
+import com.example.myapplication.CourseInformation.AssignmentSubmissions.SubmissionInfo;
 import com.example.myapplication.CourseInformation.CourseForums.AddPostReturnInfo;
 import com.example.myapplication.CourseInformation.CourseForums.DeletePostReturnInfo;
 import com.example.myapplication.CourseInformation.CourseForums.DiscussionInfo;
@@ -109,4 +110,9 @@ public interface MoodleApi {
                                                         @Query("wsfunction") String wsfunction,
                                                         @Query("postid") String postid);
 
+    @POST(REST_API_LINK)
+    Call<SubmissionInfo> getReturnResOfViewSubmissions(@Query("moodlewsrestformat") String moodlewsrestformat,
+                                                  @Query("wstoken") String wstoken,
+                                                  @Query("wsfunction") String wsfunction,
+                                                  @Query("assignid") String assignid);
 }

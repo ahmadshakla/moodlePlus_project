@@ -37,6 +37,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.myapplication.Constants.VOICE_COMMAND_REQUEST_CODE;
+
 public class CoursesMenuActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -110,7 +112,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "speech to text");
-                startActivityForResult(speechIntent, 1);
+                startActivityForResult(speechIntent, VOICE_COMMAND_REQUEST_CODE);
             }
         });
 
@@ -120,7 +122,7 @@ public class CoursesMenuActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        if (requestCode == VOICE_COMMAND_REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 ArrayList<String> match = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (match != null) {

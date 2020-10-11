@@ -118,7 +118,7 @@ public class CourseInfoActivity extends AppCompatActivity {
                     forumInfoHashMap.put(forum.getCmid(), forum);
                 }
                 fatherAdapter = new CourseSectionViewAdapter(courseSections, CourseInfoActivity.this,
-                        token, forumInfoHashMap);
+                        token, forumInfoHashMap,courseid);
                 progressBar.setVisibility(View.INVISIBLE);
                 fatherRecyclerView.setLayoutManager(fatherLayoutManager);
                 fatherRecyclerView.setAdapter(fatherAdapter);
