@@ -7,16 +7,20 @@ public class SubmissionInfo {
     public Feedback feedback;
 
     public static class LastAttempt {
-        public String id;
-        public String userid;
-        public String attemptnumber;
-        public String timecreated;
-        public String timemodified;
-        public String status;
-        public String groupid;
-        public String assignment;
-        public String latest;
-        public List<LastAttempt.Plugins> plugins;
+        Submissions submission;
+        public static class Submissions{
+
+            public String id;
+            public String userid;
+            public String attemptnumber;
+            public String timecreated;
+            public String timemodified;
+            public String status;
+            public String groupid;
+            public String assignment;
+            public String latest;
+            public List<LastAttempt.Plugins> plugins;
+        }
 
         public static class Plugins {
             public String type;
@@ -24,7 +28,7 @@ public class SubmissionInfo {
 
             public static class FileArea {
                 public List<SubmissionFile> files;
-
+                public String area;
                 public static class SubmissionFile {
                     public String filename;
                     public String filepath;
@@ -55,10 +59,11 @@ public class SubmissionInfo {
         }
         public static class Plugins {
             public String type;
-            public List<LastAttempt.Plugins.FileArea> fileareas;
+            public List<Feedback.Plugins.FileArea> fileareas;
 
             public static class FileArea {
-                public List<LastAttempt.Plugins.FileArea.SubmissionFile> files;
+                public List<Feedback.Plugins.FileArea.SubmissionFile> files;
+                public String area;
 
                 public static class SubmissionFile {
                     public String filename;

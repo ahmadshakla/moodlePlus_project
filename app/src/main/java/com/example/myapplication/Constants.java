@@ -11,12 +11,7 @@ public class Constants {
     public static final String MOODLE_SERVICE = "moodle_mobile_app";
     public static final String WRONG_LOGIN = "wrong username or password";
     public static final String MOODLE_W_REST_FORMAT = "json";
-    public static final String USERNAME = "ahmad.shakla";
-//    public static final String USERNAME = "mohammadja";
-    public static final String PASSWORD = "0932ahs";
-//    public static final String PASSWORD = "0506540821";
-    public static final String ID_NUMBER = "31529455";
-//    public static final String ID_NUMBER = "31473642";
+    public static final String ID_NUMBER = "password";
     public static final String TAG = "moodlePlus";
     public static final String ON_FAILURE_COURSE_CONTENTS = "failed to get the content of the " +
             "course";

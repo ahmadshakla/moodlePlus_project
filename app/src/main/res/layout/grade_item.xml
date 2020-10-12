@@ -15,7 +15,7 @@
         android:fontFamily="@font/allerta"
         android:gravity="center"
         android:padding="12dp"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/grade"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +29,7 @@
         android:gravity="center"
         android:padding="12dp"
         android:textAlignment="gravity"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/grade_item_text"
         app:layout_constraintTop_toTopOf="parent" />

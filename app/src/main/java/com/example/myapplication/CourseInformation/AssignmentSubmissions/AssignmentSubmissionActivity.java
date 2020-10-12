@@ -21,6 +21,7 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.Button;
@@ -34,7 +35,9 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -69,6 +72,8 @@ public class AssignmentSubmissionActivity extends AppCompatActivity {
         convertToPDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ActivityCompat.requestPermissions(AssignmentSubmissionActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},300);
                 createPDFWithMultipleImage();
             }
         });
@@ -90,6 +95,9 @@ public class AssignmentSubmissionActivity extends AppCompatActivity {
         if (requestCode == Constants.CAMERA_COMMAND_REQUEST_CODE && grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
             openCamera();
         }
+        else if (requestCode == 300){
+            createPDFWithMultipleImage();
+        }
         else{
             Toast.makeText(this,"You need to allow camera permissions to use this feature!",
                     Toast.LENGTH_LONG).show();
@@ -110,6 +118,29 @@ public class AssignmentSubmissionActivity extends AppCompatActivity {
         }
     }
 
+    private void createpdf(){
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.book);
+
+        PdfDocument pdfDocument = new PdfDocument();
+        Paint myPaint = new Paint();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(250,400,1).create();
+        PdfDocument.Page myPage = pdfDocument.startPage(pageInfo);
+        Canvas canvas = myPage.getCanvas();
+        canvas.drawBitmap(bitmap,40,50,myPaint);
+        pdfDocument.finishPage(myPage);
+        File file = new File(getFilesDir()+"/pdf1.pdf");
+        if (!file.exists()){
+            file.mkdir();
+        }
+//        File file1 = new File(file,"ff1");
+        try {
+            pdfDocument.writeTo(new FileOutputStream(file  ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pdfDocument.close();
+    }
+
     private void openCamera(){
         Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(camera, CAMERA_INTENT_REQUEST);
@@ -128,12 +159,16 @@ public class AssignmentSubmissionActivity extends AppCompatActivity {
                     PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), (i + 1)).create();
                     PdfDocument.Page page = pdfDocument.startPage(pageInfo);
                     Canvas canvas = page.getCanvas();
-                    Paint paint = new Paint();
-                    paint.setColor(Color.BLUE);
-                    canvas.drawPaint(paint);
-//                    canvas.drawBitmap(bitmap, 0f, 0f, null);
+                    Paint myPaint = new Paint();
+
+//                    canvas.drawBitmap(bitmap,bitmap.getHeight(),bitmap.getHeight(),myPaint);
+
+//                    Paint paint = new Paint();
+//                    paint.setColor(Color.BLUE);
+//                    canvas.drawPaint(paint);
+                    canvas.drawBitmap(bitmap, 0f, 0f, null);
                     pdfDocument.finishPage(page);
-                    bitmap.recycle();
+//                    bitmap.recycle();
                 }
                 pdfDocument.writeTo(fileOutputStream);
                 pdfDocument.close();
@@ -145,10 +180,9 @@ public class AssignmentSubmissionActivity extends AppCompatActivity {
     }
 
     private File getOutputFile(){
-        File root = new File(getExternalFilesDir(null),"My PDF Folder");
+        File root = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),"My PDF Folder");
         String hbf = this.getExternalFilesDir(null).getAbsolutePath();
         boolean isFolderCreated = true;
-
         if (!root.exists()){
             isFolderCreated = root.mkdir();
         }
@@ -156,7 +190,6 @@ public class AssignmentSubmissionActivity extends AppCompatActivity {
         if (isFolderCreated) {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
             String imageFileName = "PDF_" + timeStamp;
-
             return new File(root, imageFileName + ".pdf");
         }
         else {
