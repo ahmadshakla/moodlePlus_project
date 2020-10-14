@@ -18,7 +18,8 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/ic_more_vert_black_24dp"
         android:backgroundTint="#448AFF"
-        app:layout_constraintBottom_toTopOf="@+id/course_name_text_view"
+
+        app:layout_constraintBottom_toTopOf="@+id/calenderMainButton"
         app:layout_constraintEnd_toStartOf="@+id/year_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +33,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/microphone"
-        app:layout_constraintBottom_toTopOf="@+id/course_name_text_view"
+        app:layout_constraintBottom_toTopOf="@+id/calenderMainButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/year_text_view"
         app:layout_constraintTop_toTopOf="parent" />
