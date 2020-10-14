@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.myapplication">
+    package="com.postPc.moodlePlus">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name=".MoodleApp"
+        android:name="com.postPc.moodlePlus.MoodleApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_icon1"
         android:label="Moodle+"
@@ -18,24 +18,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".UserLoginActivity"></activity>
-        <activity android:name=".CourseInformation.AssignmentSubmissions.AssignmentStatusActivity" />
-        <activity android:name=".CourseInformation.AssignmentSubmissions.AssignmentSubmissionActivity" />
-        <activity android:name=".CourseInformation.CourseFolderViewActivity" />
-        <activity android:name=".CourseInformation.CourseEvents.CourseEventsActivity" />
-        <activity android:name=".CourseInformation.CourseForums.ReplyToPostActivity" />
-        <activity android:name=".CourseInformation.CourseForums.AddDiscussionActivity" />
-        <activity android:name=".CourseInformation.CourseForums.DiscussionPostsActivity" />
-        <activity android:name=".CourseInformation.CourseForums.ForumViewActivity" />
-        <activity android:name=".CalenderData.CalenderViewActivity" />
-        <activity android:name=".CourseInformation.CourseGrades.GradesInfoActivity" />
+        <activity android:name="com.postPc.moodlePlus.UserLoginActivity"></activity>
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.AssignmentSubmissions.AssignmentStatusActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.AssignmentSubmissions.AssignmentSubmissionActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.CourseFolderViewActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.CourseEvents.CourseEventsActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.CourseForums.ReplyToPostActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.CourseForums.AddDiscussionActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.CourseForums.DiscussionPostsActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.CourseForums.ForumViewActivity" />
+        <activity android:name="com.postPc.moodlePlus.CalenderData.CalenderViewActivity" />
+        <activity android:name="com.postPc.moodlePlus.CourseInformation.CourseGrades.GradesInfoActivity" />
         <activity
-            android:name=".CourseInformation.CourseInfoActivity"
+            android:name="com.postPc.moodlePlus.CourseInformation.CourseInfoActivity"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".MainMenu.CoursesMenuActivity"
+            android:name="com.postPc.moodlePlus.MainMenu.CoursesMenuActivity"
             tools:ignore="InnerclassSeparator" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.postPc.moodlePlus.MainActivity">
             <intent-filter tools:ignore="ExtraText">
                 <action android:name="android.intent.action.MAIN" />
 
