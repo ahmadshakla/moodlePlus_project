@@ -1,0 +1,18 @@
+	##############################################################################
+	#App Name: Moodle+							     #
+	#Version: 1.0								     #
+	#Developers: 								     #
+	#- Ahmad Shakla								     #
+	#	mail: ahmad.shakla@mail.huji.ac.il				     #
+	#	id: 315294553							     #
+	#- Hussam Shweiki 							     #
+	#	mail: hussam.shweiki@mail.huji.ac.il				     #
+	#	ID: 318496908							     #
+	##############################################################################
+
+Comments:
+
+- Developing this application was challenging and took a lot of effort, We really could have used help of a third partner
+  but unfortunately we were only two.
+- it was really hard to deal with JSON formats and with html code pieces, but it was really useful for the both of us
+  and we feel like we learned many different stuff.
